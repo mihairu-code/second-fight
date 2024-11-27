@@ -1,8 +1,99 @@
 .article-card {
-  width: 100%;
+  width: 58.625rem;
   height: 140px;
+  padding: 1rem 1rem 1.5rem 1rem;
   background: #ffffff;
 
   border-radius: 5px;
   box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.15);
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.33333rem;
+
+  & h5 {
+    margin: 0;
+    width: fit-content;
+    color: rgba(54, 110, 255, 1);
+    font-family:
+      Inter UI,
+      sans-serif;
+    font-size: 1.25rem;
+    line-height: 1.6rem;
+    text-align: left;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    font-weight: 300;
+  }
+
+  & .tag-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    width: fit-content;
+
+    display: flex;
+    flex-direction: row;
+    column-gap: 0.5rem;
+
+    & .tag {
+      width: fit-content;
+      padding: 2px 6px;
+      & div {
+        margin: 0;
+      }
+    }
+  }
+
+  & .card-text {
+    color: rgba(0, 0, 0, 0.7);
+    font-family:
+      Inter UI,
+      sans-serif;
+    font-size: 1em;
+    line-height: 1.7em;
+    text-align: left;
+    word-spacing: 0.3em;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+  }
+
+  .card-user {
+    top: 1rem;
+    right: 1rem;
+    position: absolute;
+    display: flex;
+    flex-direction: row-reverse;
+    column-gap: 0.75rem;
+    & span {
+      align-self: end;
+      width: fit-content;
+      &:first-child {
+        color: rgba(0, 0, 0, 0.65);
+        font-family:
+          Inter UI,
+          Inter,
+          sans-serif;
+        font-size: 1.5em;
+        font-weight: 200;
+        line-height: 1.5em;
+        text-align: left;
+        text-underline-position: from-font;
+        text-decoration-skip-ink: none;
+      }
+      &:last-child {
+        color: rgba(0, 0, 0, 0.5);
+        font-family:
+          Inter UI,
+          Inter,
+          sans-serif;
+        font-size: 1em;
+        line-height: 1.75em;
+        text-align: left;
+        text-underline-position: from-font;
+        text-decoration-skip-ink: none;
+      }
+    }
+  }
 }

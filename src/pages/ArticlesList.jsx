@@ -6,11 +6,11 @@ import ArticleCard from '@components/ArticleCard.jsx';
 export default function ArticlesList({ articles }) {
   return (
     <>
-      <section className="list">
+      <ul className="list">
         {articles.map((article, index) => (
           <ArticleCard key={index} data={article} />
         ))}
-      </section>
+      </ul>
       <Pagination
         className="pagination"
         page={1}
