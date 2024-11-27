@@ -12,19 +12,28 @@
   flex-direction: column;
   row-gap: 0.33333rem;
 
-  & h5 {
-    margin: 0;
-    width: fit-content;
-    color: rgba(54, 110, 255, 1);
-    font-family:
-      Inter UI,
-      sans-serif;
-    font-size: 1.25rem;
-    line-height: 1.6rem;
-    text-align: left;
-    text-underline-position: from-font;
-    text-decoration-skip-ink: none;
-    font-weight: 300;
+  & .section-title {
+    display: flex;
+    flex-direction: row;
+    column-gap: 1em;
+
+    & h5 {
+      margin: 0;
+      width: fit-content;
+      color: rgba(54, 110, 255, 1);
+      font-family:
+              Inter UI,
+              sans-serif;
+      font-size: 1.25rem;
+      line-height: 1.6rem;
+      text-align: left;
+      text-underline-position: from-font;
+      text-decoration-skip-ink: none;
+      font-weight: 300;
+    }
+    & .like {
+      align-self: center;
+    }
   }
 
   & .tag-list {

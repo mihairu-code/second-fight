@@ -1,5 +1,6 @@
 import '@styles/ArticleCard.less';
 import { Label, Text, User } from '@gravity-ui/uikit';
+import {Heart} from '@gravity-ui/icons';
 
 export default function ArticleCard({ data }) {
   // Деструктуризация входных данных
@@ -43,9 +44,12 @@ export default function ArticleCard({ data }) {
   return (
     <li>
       <a className="article-card">
-        <h5 className="article-title">
-          {title[0].toUpperCase() + title.slice(0)}
-        </h5>
+        <section className="section-title">
+          <h5 className="article-title">
+            {title[0].toUpperCase() + title.slice(0)}
+          </h5>
+          <Heart className="like" />
+        </section>
         <ul className="tag-list">
           {tagList.map(tag => (
             <li key={tag}>
