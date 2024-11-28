@@ -1,6 +1,7 @@
 import '@styles/ArticleCard.less';
 import { Label, Text, User } from '@gravity-ui/uikit';
 import { Heart } from '@gravity-ui/icons';
+import { Link } from 'react-router';
 
 export default function ArticleCard({ data }) {
   // Деструктуризация входных данных
@@ -15,7 +16,11 @@ export default function ArticleCard({ data }) {
     favorited,
     favoritesCount,
     author = {},
-  } = data;
+  } = data || {};
+
+  if (!data) {
+    return <div>Loading...</div>; // Показываем сообщение о загрузке
+  }
 
   const { username = 'username', bio, image, following } = author;
 
@@ -43,7 +48,7 @@ export default function ArticleCard({ data }) {
 
   return (
     <li>
-      <a className="article-card">
+      <Link to={`/articles/${slug}`} state={{ data }} className="article-card">
         <section className="section-title">
           <h5 className="article-title">
             {title[0].toUpperCase() + title.slice(1)}
@@ -76,7 +81,7 @@ export default function ArticleCard({ data }) {
           description={formatDate(updatedAt)}
           size="l"
         />
-      </a>
+      </Link>
     </li>
   );
 }
