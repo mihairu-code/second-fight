@@ -1,6 +1,6 @@
 import '@styles/ArticleCard.less';
 import { Label, Text, User } from '@gravity-ui/uikit';
-import {Heart} from '@gravity-ui/icons';
+import { Heart } from '@gravity-ui/icons';
 
 export default function ArticleCard({ data }) {
   // Деструктуризация входных данных
@@ -46,13 +46,13 @@ export default function ArticleCard({ data }) {
       <a className="article-card">
         <section className="section-title">
           <h5 className="article-title">
-            {title[0].toUpperCase() + title.slice(0)}
+            {title[0].toUpperCase() + title.slice(1)}
           </h5>
           <Heart className="like" />
         </section>
         <ul className="tag-list">
           {tagList.map(tag => (
-            <li key={tag}>
+            <li key={tag + Math.random() * 10000}>
               <Label
                 className="tag"
                 theme={randomColorTags(tag)}
@@ -67,7 +67,7 @@ export default function ArticleCard({ data }) {
           ellipsis={true}
           variant="caption-2"
         >
-          {body[0].toUpperCase() + body.slice(1)}
+          {description[0].toUpperCase() + description.slice(1)}
         </Text>
         <User
           className="card-user"

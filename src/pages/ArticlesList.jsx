@@ -3,7 +3,10 @@ import React from 'react';
 import { Pagination } from '@gravity-ui/uikit';
 import ArticleCard from '@components/ArticleCard.jsx';
 
-export default function ArticlesList({ articles }) {
+export default function ArticlesList({ articles = [] }) {
+  if (!articles.length) {
+    return <div>Нет статей для отображения.</div>;
+  }
   return (
     <>
       <ul className="list">

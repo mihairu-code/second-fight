@@ -31,7 +31,8 @@ export default defineConfig({
     },
   },
   server: {
-    open: true, // Автоматически открывать проект в браузере
+    open: true,
+    historyApiFallback: true,
   },
   build: {
     rollupOptions: {
