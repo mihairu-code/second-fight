@@ -1,5 +1,7 @@
-import { TextInput } from '@gravity-ui/uikit';
 import React, { useState } from 'react';
+
+import { TextInput } from '@gravity-ui/uikit';
+
 import '@/styles/InputList.less';
 
 export default function InputList({ user }) {

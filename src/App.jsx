@@ -1,20 +1,22 @@
-import { useGetArticlesQuery } from '@services/ConduitAPI.js';
-import { Skeleton } from '@gravity-ui/uikit';
-import '@styles/App.less';
-import ArticlesList from '@pages/ArticlesList.jsx';
-import { Route, Routes } from 'react-router';
 import React from 'react';
-import { SignUp } from '@pages/SignUp';
+import { Route, Routes } from 'react-router';
+
+import { Skeleton } from '@gravity-ui/uikit';
+import Header from '@components/Header';
+import ArticlesList from '@pages/ArticlesList';
+import OpenedArticle from '@pages/OpenedArticle';
 import { SignIn } from '@pages/SignIn';
-import OpenedArticle from '@pages/OpenedArticle.jsx';
-import Header from '@components/Header.jsx';
+import { SignUp } from '@pages/SignUp';
+
+import '@styles/App.less';
+
+import { useGetArticlesQuery } from '@services/ConduitAPI';
 
 export function App() {
-  const { error, isLoading, data } = useGetArticlesQuery({
+  const { error, isLoading } = useGetArticlesQuery({
     limit: 5,
     offset: 0,
   });
-  const articles = data ? data['articles'] : [];
   return (
     <>
       <Header />
@@ -23,7 +25,7 @@ export function App() {
         {isLoading ? (
           <Skeleton className="loadingSpin" />
         ) : error ? (
-          <div>Ошибка загрузки: {error.message}</div>
+          <div>Ошибка загрузки: {error.message || 'Неизвестная ошибка'}</div>
         ) : (
           <Routes>
             <Route path="/" element={<ArticlesList />} />

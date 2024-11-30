@@ -1,7 +1,10 @@
-import '@styles/ArticleCard.less';
+import { Link } from 'react-router';
+
 import { Label, Text, User } from '@gravity-ui/uikit';
 import { Heart } from '@gravity-ui/icons';
-import { Link } from 'react-router';
+
+import '@styles/ArticleCard.less';
+
 import { formatDate, randomColorTags } from '@utils/cardFunctions.js';
 
 export default function ArticleCard({ data, currentPage }) {

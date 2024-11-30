@@ -1,39 +1,43 @@
-import '@styles/ArticlesList.less';
 import React from 'react';
-import { Pagination, Skeleton } from '@gravity-ui/uikit';
-import ArticleCard from '@components/ArticleCard.jsx';
-import { useGetArticlesQuery } from '@services/ConduitAPI.js';
 import { useSearchParams } from 'react-router';
+import { Pagination, Skeleton } from '@gravity-ui/uikit';
+
+import ArticleCard from '@components/ArticleCard';
+
+import '@styles/ArticlesList.less';
+
+import { useGetArticlesQuery } from '@services/ConduitAPI';
 
 export default function ArticlesList() {
   const [searchParams, setSearchParams] = useSearchParams();
   const page = Number(searchParams.get('page')) || 1;
-  const pageSize = 5; // Количество статей на страницу
-  const offset = (page - 1) * pageSize; // Вычисление сдвига для запроса
+  const pageSize = 5;
+  const offset = (page - 1) * pageSize;
 
   const { data, error, isLoading } = useGetArticlesQuery({
     limit: pageSize,
     offset,
   });
-  const articles = data ? data.articles : [];
-  const total = data ? data.articlesCount : 0; // Общее количество статей
+
+  const articles = data?.articles || [];
+  const total = data?.articlesCount || 0;
 
   if (isLoading) {
     return (
       <div>
-        {[...Array(pageSize)].map((_, index) => (
+        {Array.from({ length: pageSize }).map((_, index) => (
           <Skeleton key={index} className="loadingSpin" />
         ))}
       </div>
     );
   }
 
-  if (!isLoading && articles.length === 0) {
-    return <div>Статей нет.</div>;
+  if (error) {
+    return <div>Ошибка загрузки: {error.message || 'Неизвестная ошибка'}</div>;
   }
 
-  if (error) {
-    return <div>Ошибка загрузки: {error.message}</div>;
+  if (!isLoading && articles.length === 0) {
+    return <div>Статей нет.</div>;
   }
 
   return (
@@ -48,10 +52,8 @@ export default function ArticlesList() {
         page={page}
         pageSize={pageSize}
         total={total}
-        compact={true}
-        onUpdate={newPage => {
-          setSearchParams({ page: newPage });
-        }}
+        compact
+        onUpdate={newPage => setSearchParams({ page: newPage })}
       />
     </>
   );

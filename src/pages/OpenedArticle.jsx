@@ -1,10 +1,13 @@
-import '@styles/OpenedArticle.less';
-import { Heart } from '@gravity-ui/icons';
-import { Label, Text, User } from '@gravity-ui/uikit';
+import { useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import ReactMarkdown from 'react-markdown';
+
+import { Label, Text, User } from '@gravity-ui/uikit';
+import { Heart } from '@gravity-ui/icons';
+
+import '@styles/OpenedArticle.less';
+
 import { randomColorTags } from '@utils/cardFunctions.js';
-import { useEffect, useRef } from 'react';
 
 export default function OpenedArticle() {
   const { state } = useLocation();

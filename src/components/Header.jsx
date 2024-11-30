@@ -1,8 +1,10 @@
 import React from 'react';
 
 import { Button } from '@gravity-ui/uikit';
-import '../styles/Header.less';
 import { Link } from 'react-router';
+
+import '../styles/Header.less';
+
 export default function Header() {
   return (
     <header className="header">
