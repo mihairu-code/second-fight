@@ -1,20 +1,15 @@
-import { Link } from 'react-router';
-
+import React from 'react';
 import { Label, Text, User } from '@gravity-ui/uikit';
 import { Heart } from '@gravity-ui/icons';
+import { Link } from 'react-router';
 
 import '@styles/ArticleCard.less';
+import { formatDate, randomColorTags } from '@utils/cardFunctions';
 
-import { formatDate, randomColorTags } from '@utils/cardFunctions.js';
-
-export default function ArticleCard({ data, currentPage }) {
-  if (!data) {
-    return <div>Loading...</div>; // Безопасная проверка входных данных
-  }
-
+export default function ArticleCard({ data = {}, currentPage }) {
   const {
     slug = '',
-    title = 'Без названия',
+    title = 'No title',
     description = '',
     createdAt,
     updatedAt,
@@ -22,13 +17,13 @@ export default function ArticleCard({ data, currentPage }) {
     author = {},
   } = data;
 
-  const { username = 'username', image = '' } = author;
+  const { username = 'Username', image = '' } = author;
 
   return (
     <li key={slug}>
       <Link
         to={`/articles/${slug}`}
-        state={{ data, fromPage: currentPage }} // Передаем номер текущей страницы
+        state={{ data, fromPage: currentPage }}
         className="article-card"
       >
         <section className="section-title">
@@ -55,12 +50,12 @@ export default function ArticleCard({ data, currentPage }) {
         <Text
           className="card-text"
           whiteSpace="break-spaces"
-          ellipsis={true}
+          ellipsis
           variant="caption-2"
         >
-          {description
+          {description !== ''
             ? description[0]?.toUpperCase() + description.slice(1)
-            : null}
+            : 'No text'}
         </Text>
         <User
           className="card-user"

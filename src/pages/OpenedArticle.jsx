@@ -1,44 +1,37 @@
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import ReactMarkdown from 'react-markdown';
-
 import { Label, Text, User } from '@gravity-ui/uikit';
 import { Heart } from '@gravity-ui/icons';
 
 import '@styles/OpenedArticle.less';
-
-import { randomColorTags } from '@utils/cardFunctions.js';
+import { randomColorTags, formatDate } from '@utils/cardFunctions';
+import useOnClickOutside from '../../hooks/useOnClickOutside.jsx';
 
 export default function OpenedArticle() {
   const { state } = useLocation();
-  const data = state?.data;
-  const fromPage = state?.fromPage || 1; // Номер страницы, откуда была открыта карточка
-  const cardRef = useRef(null);
   const navigate = useNavigate();
+  const cardRef = useRef(null);
+
+  // Получение данных из state (предусмотрено значение по умолчанию)
+  const {
+    data = {},
+    fromPage = 1, // Номер страницы для возврата
+  } = state || {};
 
   const {
-    title,
-    description,
-    body,
+    title = 'No title',
+    description = '',
+    body = 'No content available.',
     updatedAt,
     tagList = [],
     author = {},
-  } = data || {};
+  } = data;
 
-  const { username, image } = author;
+  const { username = 'Unknown', image = '' } = author;
 
-  const handleOutsideClick = event => {
-    if (cardRef.current && !cardRef.current.contains(event.target)) {
-      navigate(`/articles?page=${fromPage}`); // Возврат на нужную страницу
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener('mousedown', handleOutsideClick);
-    return () => {
-      document.removeEventListener('mousedown', handleOutsideClick);
-    };
-  }, []);
+  // Хук для обработки кликов вне статьи
+  useOnClickOutside(cardRef, () => navigate(`/articles?page=${fromPage}`));
 
   return (
     <article className="article-card article_opened" ref={cardRef}>
@@ -49,34 +42,36 @@ export default function OpenedArticle() {
         <Heart className="like" />
       </section>
       <ul className="tag-list">
-        {tagList.map(tag => (
-          <li key={tag}>
-            <Label
-              className="tag"
-              theme={randomColorTags(tag)}
-              children={tag[0]?.toUpperCase() + tag.slice(1)}
-            />
-          </li>
-        ))}
+        {tagList.length > 0
+          ? tagList.map((tag, index) =>
+              tag !== '' ? (
+                <li key={index}>
+                  <Label
+                    className="tag"
+                    theme={randomColorTags(tag)}
+                    children={tag[0]?.toUpperCase() + tag.slice(1)}
+                  />
+                </li>
+              ) : null,
+            )
+          : 'No tags'}
       </ul>
       <Text
         className="card-text"
         whiteSpace="break-spaces"
-        ellipsis={true}
+        ellipsis
         variant="caption-2"
       >
         {description[0]?.toUpperCase() + description.slice(1)}
       </Text>
       <ReactMarkdown className="card__body_text">
-        {body
-          ? body[0].toUpperCase() + body.slice(1)
-          : 'Содержимое отсутствует.'}
+        {body[0]?.toUpperCase() + body.slice(1)}
       </ReactMarkdown>
       <User
         className="card-user"
         avatar={{ imgUrl: image, loading: 'eager' }}
         name={username[0]?.toUpperCase() + username.slice(1)}
-        description={new Date(updatedAt).toLocaleDateString()}
+        description={formatDate(updatedAt)}
         size="l"
       />
     </article>
