@@ -1,14 +1,4 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-
-const my = {
-  user: {
-    username: 'bioneed',
-    email: 'okonchatelni@gmail.com',
-    token:
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NDIxMDFkY2UxOGQwMWIwMDJiNTkyNiIsInVzZXJuYW1lIjoiYmlvbmVlZCIsImV4cCI6MTczNzU2Njc0OSwiaWF0IjoxNzMyMzgyNzQ5fQ.lq8Izz91l3tlmlqWK11FgzrMCODI1NGjyqAtP3WEbpo',
-  },
-};
-
 export const ConduitAPI = createApi({
   reducerPath: 'ConduitAPI',
   baseQuery: fetchBaseQuery({

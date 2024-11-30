@@ -1,6 +1,5 @@
-// eslint-disable-next-line no-unused-vars
 import React from 'react';
-// eslint-disable-next-line no-unused-vars
+
 import { Button } from '@gravity-ui/uikit';
 import '../styles/Header.less';
 import { Link } from 'react-router';

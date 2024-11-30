@@ -1,15 +1,13 @@
-import Header from '@components/Header.jsx';
 import { useGetArticlesQuery } from '@services/ConduitAPI.js';
 import { Skeleton } from '@gravity-ui/uikit';
-
-import './styles/App.less';
+import '@styles/App.less';
 import ArticlesList from '@pages/ArticlesList.jsx';
 import { Route, Routes } from 'react-router';
 import React from 'react';
 import { SignUp } from '@pages/SignUp';
 import { SignIn } from '@pages/SignIn';
-import ArticleCard from '@components/ArticleCard.jsx';
 import OpenedArticle from '@pages/OpenedArticle.jsx';
+import Header from '@components/Header.jsx';
 
 export function App() {
   const { error, isLoading, data } = useGetArticlesQuery({

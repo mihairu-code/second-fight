@@ -1,4 +1,5 @@
 .article_opened {
+  justify-content: space-between;
   width: 58.625rem;
   height: 50.4rem;
   background: #ffffff;
@@ -18,6 +19,11 @@
   }
 
   & .card__body_text {
+    overflow: auto;
+    overscroll-behavior: contain;
+    scrollbar-base-color: inherit;
+    text-overflow: ellipsis;
+    height: 42.8rem;
     color: rgba(0, 0, 0, 0.7);
     font-family:
       Inter UI,
@@ -28,5 +34,10 @@
     word-spacing: 0.3em;
     text-underline-position: from-font;
     text-decoration-skip-ink: none;
+    scrollbar-width: none;
   }
+}
+
+.card__body_text::-webkit-scrollbar {
+  display: none;
 }
