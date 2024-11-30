@@ -1,11 +1,13 @@
 import '@styles/ArticlesList.less';
-import React, { useState } from 'react';
-import { Pagination } from '@gravity-ui/uikit';
+import React from 'react';
+import { Pagination, Skeleton } from '@gravity-ui/uikit';
 import ArticleCard from '@components/ArticleCard.jsx';
 import { useGetArticlesQuery } from '@services/ConduitAPI.js';
+import { useSearchParams } from 'react-router';
 
 export default function ArticlesList() {
-  const [page, setPage] = useState(1); // Текущая страница
+  const [searchParams, setSearchParams] = useSearchParams();
+  const page = Number(searchParams.get('page')) || 1;
   const pageSize = 5; // Количество статей на страницу
   const offset = (page - 1) * pageSize; // Вычисление сдвига для запроса
 
@@ -17,7 +19,17 @@ export default function ArticlesList() {
   const total = data ? data.articlesCount : 0; // Общее количество статей
 
   if (isLoading) {
-    return <div>Загрузка...</div>;
+    return (
+      <div>
+        {[...Array(pageSize)].map((_, index) => (
+          <Skeleton key={index} className="loadingSpin" />
+        ))}
+      </div>
+    );
+  }
+
+  if (!isLoading && articles.length === 0) {
+    return <div>Статей нет.</div>;
   }
 
   if (error) {
@@ -27,8 +39,8 @@ export default function ArticlesList() {
   return (
     <>
       <ul className="list">
-        {articles.map((article, index) => (
-          <ArticleCard key={index} data={article} />
+        {articles.map(article => (
+          <ArticleCard key={article.slug} data={article} currentPage={page} />
         ))}
       </ul>
       <Pagination
@@ -37,7 +49,9 @@ export default function ArticlesList() {
         pageSize={pageSize}
         total={total}
         compact={true}
-        onUpdate={newPage => setPage(newPage)} // Обновление текущей страницы
+        onUpdate={newPage => {
+          setSearchParams({ page: newPage });
+        }}
       />
     </>
   );

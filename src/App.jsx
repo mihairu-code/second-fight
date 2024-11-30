@@ -27,10 +27,7 @@ export function App() {
         ) : (
           <Routes>
             <Route path="/" element={<ArticlesList />} />
-            <Route
-              path="/articles"
-              element={<ArticlesList articles={articles} />}
-            />
+            <Route path="/articles" element={<ArticlesList />} />
             <Route path="/articles/:slug" element={<OpenedArticle />} />
             <Route path="/sign-in" element={<SignIn />} />
             <Route path="/sign-up" element={<SignUp />} />

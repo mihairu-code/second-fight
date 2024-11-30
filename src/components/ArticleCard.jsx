@@ -4,12 +4,11 @@ import { Heart } from '@gravity-ui/icons';
 import { Link } from 'react-router';
 import { formatDate, randomColorTags } from '@utils/cardFunctions.js';
 
-export default function ArticleCard({ data }) {
+export default function ArticleCard({ data, currentPage }) {
   if (!data) {
     return <div>Loading...</div>; // Безопасная проверка входных данных
   }
 
-  // Деструктуризация входных данных с установкой значений по умолчанию
   const {
     slug = '',
     title = 'Без названия',
@@ -23,28 +22,32 @@ export default function ArticleCard({ data }) {
   const { username = 'username', image = '' } = author;
 
   return (
-    <li>
-      <Link to={`/articles/${slug}`} state={{ data }} className="article-card">
+    <li key={slug}>
+      <Link
+        to={`/articles/${slug}`}
+        state={{ data, fromPage: currentPage }} // Передаем номер текущей страницы
+        className="article-card"
+      >
         <section className="section-title">
           <h5 className="article-title">
-            {title[0]?.toUpperCase() + title.slice(1)}
+            {title !== ''
+              ? title[0]?.toUpperCase() + title.slice(1)
+              : 'No title'}
           </h5>
           <Heart className="like" />
         </section>
         <ul className="tag-list">
-          {tagList.length > 0
-            ? tagList.map(tag =>
-                tag !== undefined ? (
-                  <li key={tag}>
-                    <Label
-                      className="tag"
-                      theme={randomColorTags(tag)}
-                      children={tag[0]?.toUpperCase() + tag.slice(1)}
-                    />
-                  </li>
-                ) : null,
-              )
-            : null}
+          {tagList.map((tag, index) =>
+            tag !== '' ? (
+              <li key={index}>
+                <Label
+                  className="tag"
+                  theme={randomColorTags(tag)}
+                  children={tag[0]?.toUpperCase() + tag.slice(1)}
+                />
+              </li>
+            ) : null,
+          )}
         </ul>
         <Text
           className="card-text"
@@ -54,7 +57,7 @@ export default function ArticleCard({ data }) {
         >
           {description
             ? description[0]?.toUpperCase() + description.slice(1)
-            : 'Описание отсутствует'}
+            : null}
         </Text>
         <User
           className="card-user"
