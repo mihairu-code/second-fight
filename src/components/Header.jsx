@@ -13,7 +13,7 @@ export default function Header() {
         <Link className="header__title_link" to="/articles">
           <h1 className="header__title">Realworld Blog</h1>
         </Link>
-        {a ? (
+        {!a ? (
           <>
             <Link className="header__link margin_link" to="/sign-in">
               <Button className="header__sign-in" view="flat" size="xl">
