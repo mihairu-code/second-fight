@@ -4,7 +4,7 @@ import { TextInput } from '@gravity-ui/uikit';
 
 import '@/styles/InputList.less';
 
-export default function InputList({ user }) {
+export default function InputList({ user, onInputChange }) {
   const typeOfInputs = {
     new: [
       {
@@ -73,39 +73,8 @@ export default function InputList({ user }) {
       },
     ],
   };
+
   const inputs = typeOfInputs[user];
-
-  const [placeholders, setPlaceholders] = useState(
-    inputs.map(input => input.placeholder),
-  );
-  const [notes, setNotes] = useState({}); // Для управления note
-  const [values, setValues] = useState(inputs.map(() => '')); // Для хранения введённых значений
-
-  const handleFocus = (index, name) => {
-    setPlaceholders(prev => prev.map((p, i) => (i === index ? '' : p))); // Убираем placeholder
-    setNotes(prevNotes => ({ ...prevNotes, [index]: name })); // Устанавливаем note
-  };
-
-  const handleBlur = index => {
-    setPlaceholders(prev =>
-      prev.map((p, i) =>
-        i === index && !values[index] ? inputs[index].placeholder : p,
-      ),
-    );
-
-    // Убираем note, только если поле пустое
-    setNotes(prevNotes => ({
-      ...prevNotes,
-      [index]: values[index] ? prevNotes[index] : '',
-    }));
-  };
-
-  const handleChange = (index, value) => {
-    // Обновляем значение инпута
-    setValues(prevValues =>
-      prevValues.map((v, i) => (i === index ? value : v)),
-    );
-  };
 
   return (
     <section className="imputs">
@@ -114,15 +83,12 @@ export default function InputList({ user }) {
           type={input.type}
           key={index}
           size="l"
-          placeholder={placeholders[index]}
+          placeholder={input.placeholder}
           errorPlacement="inside"
           errorMessage={input.errorMessage}
           validationState=""
           name="input"
-          note={<span className="notes-text">{notes[index] || ''}</span>}
-          onFocus={() => handleFocus(index, input.name)}
-          onBlur={() => handleBlur(index)}
-          onChange={e => handleChange(index, e.target.value)} // Отслеживаем изменения
+          onChange={e => onInputChange(index, e.target.value)}
         />
       ))}
     </section>
