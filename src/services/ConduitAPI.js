@@ -6,6 +6,7 @@ export const ConduitAPI = createApi({
     baseUrl: 'https://blog-platform.kata.academy/api',
     prepareHeaders: (headers, { getState }) => {
       const token = getState().auth?.token; // Получаем токен из состояния
+      console.log('Token in prepareHeaders:', token);
       if (token) {
         headers.set('Authorization', `Token ${token}`);
       }
