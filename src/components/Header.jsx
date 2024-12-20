@@ -1,33 +1,18 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import { Button, UserLabel } from '@gravity-ui/uikit';
-import { Link, Outlet, useNavigate } from 'react-router';
-import { logout } from '@store/authSlice';
-import { useGetCurrentUserQuery } from '@services/ConduitAPI';
+import { Link, Outlet } from 'react-router';
 
 import '../styles/Header.less';
 
 export default function Header() {
-  const navigate = useNavigate();
-  const goToProfile = () => {
-    navigate('/profile');
-  };
-  const token = useSelector(state => state.auth.token);
-  const { data, error, isLoading } = useGetCurrentUserQuery();
-  const { isAuthenticated, user } = useSelector(state => state.auth);
-  const dispatch = useDispatch();
-
-  const handleLogout = () => {
-    dispatch(logout());
-  };
-
+  const a = 1;
   return (
     <>
       <header className="header">
         <Link className="header__title_link" to="/articles">
           <h1 className="header__title">Realworld Blog</h1>
         </Link>
-        {!isAuthenticated ? (
+        {a ? (
           <>
             <Link className="header__link margin_link" to="/sign-in">
               <Button className="header__sign-in" view="flat" size="xl">
@@ -60,16 +45,16 @@ export default function Header() {
               type="person"
               size="xl"
               view="clear"
-              avatar={user?.image || 'https://via.placeholder.com/150'}
-              onClick={goToProfile}
+              avatar={'https://via.placeholder.com/150'}
+              onClick=""
             >
-              {user?.username || 'Anonymous'}
+              {'Anonymous'}
             </UserLabel>
             <Button
               className="header__logout"
               size="xl"
               view="outlined"
-              onClick={handleLogout}
+              onClick=""
             >
               Log out
             </Button>

@@ -5,13 +5,10 @@ import { Skeleton } from '@gravity-ui/uikit';
 import Header from '@components/Header';
 import ArticlesList from '@pages/ArticlesList';
 import OpenedArticle from '@pages/OpenedArticle';
-import { SignIn } from '@pages/SignIn';
-import { SignUp } from '@pages/SignUp';
-
 import '@styles/App.less';
 
 import { useGetArticlesQuery } from '@services/ConduitAPI';
-import EditProfile from '@pages/EditProfile.jsx';
+import SignUp from '@pages/SigbUp.jsx';
 
 export function App() {
   const { error, isLoading } = useGetArticlesQuery({
@@ -41,9 +38,9 @@ export function App() {
         <Route index element={<ArticlesList />} />
         <Route path="articles" element={<ArticlesList />} />
         <Route path="articles/:slug" element={<OpenedArticle />} />
-        <Route path="sign-in" element={<SignIn />} />
+        {/* <Route path="sign-in" element={<SignIn />} /> */}
         <Route path="sign-up" element={<SignUp />} />
-        <Route path="profile" element={<EditProfile />} />
+        {/* <Route path="profile" element={<EditProfile />} /> */}
       </Route>
     </Routes>
   );
