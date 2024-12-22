@@ -1,18 +1,26 @@
 import React from 'react';
 import { Button, UserLabel } from '@gravity-ui/uikit';
 import { Link, Outlet } from 'react-router';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { setAuth } from '@store/store.js'; // Подключите ваш экшн
 import '../styles/Header.less';
 
 export default function Header() {
-  const a = 1;
+  const dispatch = useDispatch();
+  const user = useSelector(state => state.auth.user); // Получаем данные о пользователе из Redux
+
+  const logout = () => {
+    // Очистить авторизацию при выходе
+    dispatch(setAuth({ token: null, user: null }));
+  };
+
   return (
     <>
       <header className="header">
         <Link className="header__title_link" to="/articles">
           <h1 className="header__title">Realworld Blog</h1>
         </Link>
-        {a ? (
+        {!user ? (
           <>
             <Link className="header__link margin_link" to="/sign-in">
               <Button className="header__sign-in" view="flat" size="xl">
@@ -45,16 +53,16 @@ export default function Header() {
               type="person"
               size="xl"
               view="clear"
-              avatar={'https://via.placeholder.com/150'}
+              avatar={user?.image || 'https://via.placeholder.com/150'} // Используем изображение пользователя
               onClick=""
             >
-              {'Anonymous'}
+              {user?.username || 'Anonymous'}
             </UserLabel>
             <Button
               className="header__logout"
               size="xl"
               view="outlined"
-              onClick=""
+              onClick={logout}
             >
               Log out
             </Button>

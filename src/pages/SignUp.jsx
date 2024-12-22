@@ -1,31 +1,78 @@
 import React from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import { TextInput, Button, Checkbox, Toaster } from '@gravity-ui/uikit';
+import { Controller, useForm } from 'react-hook-form';
+import { Button, Checkbox, TextInput } from '@gravity-ui/uikit';
+import { toaster } from '@gravity-ui/uikit/toaster-singleton-react-18';
+import { useRegisterUserMutation } from '@services/ConduitAPI';
+import { useDispatch } from 'react-redux';
+import { setAuth } from '@store/store.js';
 import '@styles/Sign.less';
+import { Link, useNavigate } from 'react-router';
 
 export default function SignUp() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [registerUser, { isLoading }] = useRegisterUserMutation();
+
   const {
     control,
     handleSubmit,
     formState: { errors },
     watch,
   } = useForm({
-    mode: 'onChange', // Включаем валидацию на каждом изменении
+    mode: 'onChange',
   });
 
-  const password = watch('password', ''); // Для проверки совпадения паролей
-  const consent = watch('consent', false); // Проверка состояния чекбокса
+  const password = watch('password', '');
+  const consent = watch('consent', false);
 
-  const onSubmit = data => {
+  const onSubmit = async data => {
     if (!consent) {
-      Toaster.add({
+      toaster.add({
+        name: 'consent-error',
         title: 'Ошибка',
-        message: 'Необходимо согласие с обработкой персональных данных',
-        type: 'error',
+        content: 'Необходимо согласие с обработкой персональных данных',
+        theme: 'danger',
+        autoHiding: 5000,
       });
       return;
     }
-    console.log('Registration Data: ', data);
+
+    try {
+      const response = await registerUser({
+        username: data.username,
+        email: data.email,
+        password: data.password,
+      }).unwrap();
+
+      dispatch(
+        setAuth({
+          token: response.user.token,
+          user: response.user,
+        }),
+      );
+
+      toaster.add({
+        name: 'registration-success',
+        title: 'Успешно!',
+        content: 'Вы успешно зарегистрированы!',
+        theme: 'success',
+        autoHiding: 5000,
+      });
+
+      navigate('/sign-in');
+    } catch (error) {
+      toaster.add({
+        name: 'registration-error',
+        title: 'Ошибка регистрации',
+        content: error.data?.errors
+          ? Object.entries(error.data.errors)
+              .map(([key, value]) => `${key}: ${value.join(', ')}`)
+              .join('\n')
+          : 'Неизвестная ошибка',
+        theme: 'danger',
+        autoHiding: 5000,
+      });
+    }
   };
 
   return (
@@ -48,7 +95,7 @@ export default function SignUp() {
           <TextInput
             {...field}
             placeholder="Email"
-            note={field.value ? 'Email' : undefined} // Отображаем label, если есть значение
+            note={field.value ? 'Email' : undefined}
             type="email"
             error={!!errors.email && field.value !== ''}
             errorMessage={field.value !== '' ? errors.email?.message : ''}
@@ -155,15 +202,20 @@ export default function SignUp() {
       />
 
       {/* Submit */}
-      <Button
-        className="create-button"
-        type="submit"
-        size="l"
-        view="action"
-        disabled={Object.keys(errors).length > 0}
-      >
-        Зарегистрироваться
-      </Button>
+      <section className="button-area">
+        <Button
+          className="create-button"
+          type="submit"
+          size="l"
+          view="action"
+          disabled={isLoading || Object.keys(errors).length > 0}
+        >
+          Зарегистрироваться
+        </Button>
+        <span>
+          Уже есть аккаунт? <Link to="/sign-in">Войти</Link>.
+        </span>
+      </section>
     </form>
   );
 }

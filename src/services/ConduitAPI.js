@@ -26,7 +26,26 @@ export const ConduitAPI = createApi({
         url: `/articles/${slug}`,
       }),
     }),
+    registerUser: builder.mutation({
+      query: ({ username, email, password }) => ({
+        url: '/users',
+        method: 'POST',
+        body: { user: { username, email, password } },
+      }),
+    }),
+    login: builder.mutation({
+      query: ({ username, email, password }) => ({
+        url: '/users/login',
+        method: 'POST',
+        body: { user: { email, password } },
+      }),
+    }),
   }),
 });
 
-export const { useGetArticlesQuery, useGetArticleBySlugQuery } = ConduitAPI;
+export const {
+  useLoginMutation,
+  useGetArticlesQuery,
+  useGetArticleBySlugQuery,
+  useRegisterUserMutation,
+} = ConduitAPI;
