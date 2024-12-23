@@ -28,6 +28,15 @@ export default function SignIn() {
         password: data.password,
       }).unwrap();
 
+      // eslint-disable-next-line no-undef
+      localStorage.setItem(
+        'auth',
+        JSON.stringify({
+          token: response.user.token,
+          user: response.user,
+        }),
+      );
+
       // Сохраняем токен и данные о пользователе в Redux
       dispatch(
         setAuth({
@@ -39,15 +48,27 @@ export default function SignIn() {
       // Перенаправляем пользователя на главную страницу
       navigate('/'); // или на нужную страницу после входа
     } catch (error) {
-      console.error('Login Error:', error);
-      // Добавляем уведомление о неудаче
-      toaster.create({
+      let errorMessage = 'Неизвестная ошибка';
+
+      if (error.data?.errors) {
+        if (typeof error.data.errors === 'object') {
+          // Обработка объекта ошибок
+          errorMessage = Object.entries(error.data.errors)
+            .map(([key, value]) =>
+              Array.isArray(value)
+                ? `${key}: ${value.join(', ')}`
+                : `${key}: ${value}`,
+            )
+            .join('\n');
+        } else {
+          // Если errors — это строка или другой тип
+          errorMessage = String(error.data.errors);
+        }
+      }
+
+      toaster.add({
         title: 'Ошибка входа',
-        message: error.data?.errors
-          ? Object.entries(error.data.errors)
-              .map(([key, value]) => `${key}: ${value.join(', ')}`)
-              .join('\n')
-          : 'Неизвестная ошибка',
+        message: errorMessage,
         type: 'error',
       });
     }

@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, UserLabel } from '@gravity-ui/uikit';
 import { Link, Outlet } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
-import { setAuth } from '@store/store.js'; // Подключите ваш экшн
+import { clearAuth } from '@store/store.js';
 import '../styles/Header.less';
 
 export default function Header() {
@@ -10,8 +10,9 @@ export default function Header() {
   const user = useSelector(state => state.auth.user); // Получаем данные о пользователе из Redux
 
   const logout = () => {
-    // Очистить авторизацию при выходе
-    dispatch(setAuth({ token: null, user: null }));
+    dispatch(clearAuth());
+    // eslint-disable-next-line no-undef
+    localStorage.removeItem('auth');
   };
 
   return (
@@ -54,7 +55,6 @@ export default function Header() {
               size="xl"
               view="clear"
               avatar={user?.image || 'https://via.placeholder.com/150'} // Используем изображение пользователя
-              onClick=""
             >
               {user?.username || 'Anonymous'}
             </UserLabel>

@@ -4,7 +4,6 @@ import { Button, Checkbox, TextInput } from '@gravity-ui/uikit';
 import { toaster } from '@gravity-ui/uikit/toaster-singleton-react-18';
 import { useRegisterUserMutation } from '@services/ConduitAPI';
 import { useDispatch } from 'react-redux';
-import { setAuth } from '@store/store.js';
 import '@styles/Sign.less';
 import { Link, useNavigate } from 'react-router';
 
@@ -38,18 +37,11 @@ export default function SignUp() {
     }
 
     try {
-      const response = await registerUser({
+      await registerUser({
         username: data.username,
         email: data.email,
         password: data.password,
       }).unwrap();
-
-      dispatch(
-        setAuth({
-          token: response.user.token,
-          user: response.user,
-        }),
-      );
 
       toaster.add({
         name: 'registration-success',
@@ -59,16 +51,30 @@ export default function SignUp() {
         autoHiding: 5000,
       });
 
-      navigate('/sign-in');
+      navigate('/sign-in'); // Перенаправляем на страницу входа
     } catch (error) {
+      let errorMessage = 'Неизвестная ошибка';
+
+      if (error.data?.errors) {
+        if (typeof error.data.errors === 'object') {
+          // Обработка объекта ошибок
+          errorMessage = Object.entries(error.data.errors)
+            .map(([key, value]) =>
+              Array.isArray(value)
+                ? `${key}: ${value.join(', ')}`
+                : `${key}: ${value}`,
+            )
+            .join('\n');
+        } else {
+          // Если errors — это строка или другой тип
+          errorMessage = String(error.data.errors);
+        }
+      }
+
       toaster.add({
         name: 'registration-error',
         title: 'Ошибка регистрации',
-        content: error.data?.errors
-          ? Object.entries(error.data.errors)
-              .map(([key, value]) => `${key}: ${value.join(', ')}`)
-              .join('\n')
-          : 'Неизвестная ошибка',
+        content: errorMessage,
         theme: 'danger',
         autoHiding: 5000,
       });
