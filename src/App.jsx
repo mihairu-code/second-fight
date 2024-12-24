@@ -10,6 +10,7 @@ import '@styles/App.less';
 import { useGetArticlesQuery } from '@services/ConduitAPI';
 import SignUp from '@pages/SignUp.jsx';
 import SignIn from '@pages/SignIn.jsx';
+import EditProfile from '@pages/EditProfile.jsx';
 
 export function App() {
   const { error, isLoading } = useGetArticlesQuery({
@@ -41,7 +42,7 @@ export function App() {
         <Route path="articles/:slug" element={<OpenedArticle />} />
         <Route path="sign-in" element={<SignIn />} />
         <Route path="sign-up" element={<SignUp />} />
-        {/* <Route path="profile" element={<EditProfile />} /> */}
+        <Route path="profile" element={<EditProfile />} />
       </Route>
     </Routes>
   );

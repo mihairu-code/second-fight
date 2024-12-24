@@ -26,6 +26,7 @@ export const ConduitAPI = createApi({
         url: `/articles/${slug}`,
       }),
     }),
+    // Регистрация пользователя
     registerUser: builder.mutation({
       query: ({ username, email, password }) => ({
         url: '/users',
@@ -33,11 +34,27 @@ export const ConduitAPI = createApi({
         body: { user: { username, email, password } },
       }),
     }),
+    // Авторизация пользователя
     login: builder.mutation({
-      query: ({ username, email, password }) => ({
+      query: ({ email, password }) => ({
         url: '/users/login',
         method: 'POST',
         body: { user: { email, password } },
+      }),
+    }),
+    // Обновление профиля пользователя
+    updateUser: builder.mutation({
+      query: ({ username, email, avatar, password }) => ({
+        url: '/user',
+        method: 'PUT',
+        body: {
+          user: {
+            username,
+            email,
+            image: avatar,
+            ...(password && { password }),
+          },
+        },
       }),
     }),
   }),
@@ -48,4 +65,5 @@ export const {
   useGetArticlesQuery,
   useGetArticleBySlugQuery,
   useRegisterUserMutation,
+  useUpdateUserMutation,
 } = ConduitAPI;

@@ -49,15 +49,17 @@ export default function Header() {
                 Create Article
               </Button>
             </Link>
-            <UserLabel
-              className="header__user-label"
-              type="person"
-              size="xl"
-              view="clear"
-              avatar={user?.image || 'https://via.placeholder.com/150'} // Используем изображение пользователя
-            >
-              {user?.username || 'Anonymous'}
-            </UserLabel>
+            <Link className="header__link" to="/profile">
+              <UserLabel
+                className="header__user-label"
+                type="person"
+                size="xl"
+                view="clear"
+                avatar={user?.image || 'https://via.placeholder.com/150'} // Используем изображение пользователя
+              >
+                {user?.username || 'Anonymous'}
+              </UserLabel>
+            </Link>
             <Button
               className="header__logout"
               size="xl"
