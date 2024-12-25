@@ -1,6 +1,7 @@
 .sign-up,
 .edit-profile,
-.sign-in {
+.sign-in,
+.create-article {
   width: 33%;
   max-width: 384px;
   height: fit-content;
@@ -40,13 +41,6 @@
     height: 2.5rem;
   }
 
-  .g-outer-additional-content__note {
-    position: absolute;
-    top: -4rem;
-    width: max-content;
-    opacity: 0.6;
-  }
-
   .form-group {
     width: 100%;
   }
@@ -55,8 +49,17 @@
     align-self: center;
   }
 
+  .g-text-area {
+    position: relative;
+  }
+
   .g-outer-additional-content {
     position: absolute;
+    top: -1.25rem;
+    &__note {
+      width: max-content;
+      opacity: 0.6;
+    }
   }
 
   .checkbox {
@@ -113,6 +116,20 @@
       }
     }
   }
+  .tags-section {
+    align-self: flex-start;
+    display: flex;
+    flex-direction: column;
+    row-gap: 1.250rem;
+  }
+}
+
+
+
+.create-article {
+  min-width: 40%;
+  width: 56%;
+  max-width: 56%;
 }
 
 .sign-up {
