@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Button, Icon, Label, TextArea, TextInput } from '@gravity-ui/uikit';
-import { Gear } from '@gravity-ui/icons';
+import { Pencil, SquarePlus } from '@gravity-ui/icons'; // Импортируем Pencil
 import '@styles/Sign.less';
 
 export default function CreateArticle() {
@@ -20,18 +20,18 @@ export default function CreateArticle() {
 
   const addTag = () => {
     const newTag = getValues('tag').trim();
+
+    if (newTag.length > 12) return; // Проверка на длину тега
+
     if (editIndex !== null) {
       // Редактирование существующего тега
       const updatedTags = [...tags];
       updatedTags[editIndex] = newTag;
       setTags(updatedTags);
       setEditIndex(null);
-    } else if (newTag && /^[a-zA-Z]{1,8}$/.test(newTag)) {
+    } else if (newTag) {
       // Добавление нового тега
       setTags([...tags, newTag]);
-    } else {
-      // Валидация не пройдена
-      return;
     }
     setValue('tag', ''); // Очистить поле ввода
   };
@@ -42,8 +42,8 @@ export default function CreateArticle() {
   };
 
   const editTag = index => {
-    setValue('tag', tags[index]);
-    setEditIndex(index);
+    setValue('tag', tags[index]); // Поместить тег в поле ввода
+    setEditIndex(index); // Установить индекс редактируемого тега
   };
 
   const onSubmit = data => {
@@ -109,8 +109,7 @@ export default function CreateArticle() {
             note={field.value ? 'Текст статьи' : undefined}
             error={!!errors.text}
             errorMessage={errors.text?.message}
-            multiline
-            rows={10} // Задает высоту текстового поля
+            rows={10}
           />
         )}
       />
@@ -121,21 +120,6 @@ export default function CreateArticle() {
           name="tag"
           control={control}
           defaultValue=""
-          rules={{
-            required: 'Тег обязателен',
-            minLength: {
-              value: 1,
-              message: 'Тег должен быть не менее 1 символа',
-            },
-            maxLength: {
-              value: 8,
-              message: 'Тег должен быть не более 8 символов',
-            },
-            pattern: {
-              value: /^[a-zA-Z]+$/,
-              message: 'Тег должен содержать только буквы',
-            },
-          }}
           render={({ field }) => (
             <TextInput
               {...field}
@@ -146,28 +130,23 @@ export default function CreateArticle() {
             />
           )}
         />
-        <Button type="button" onClick={addTag} size="m" view="outlined-success">
-          {editIndex !== null ? 'Редактировать тег' : 'Добавить тег'}
+        <Button type="button" onClick={addTag} size="m" view="flat">
+          <Icon size={20} data={editIndex !== null ? Pencil : SquarePlus} />{' '}
+          {/* Меняем иконку */}
         </Button>
+        <div className="tags-list">
+          {tags.map((tag, index) => (
+            <Label
+              key={index}
+              type="close"
+              onClick={() => editTag(index)}
+              onCloseClick={() => removeTag(index)}
+            >
+              {tag}
+            </Label>
+          ))}
+        </div>
       </section>
-      {/* Tags List */}
-      <div className="tags-list">
-        {tags.map((tag, index) => (
-          <Label
-            key={index}
-            type="close"
-            icon={<Icon size={16} data={Gear} onClick={() => editTag(index)} />}
-          >
-            {tag}
-            <Icon
-              size={16}
-              data={Gear}
-              onClick={() => removeTag(index)}
-              style={{ cursor: 'pointer', marginLeft: '8px' }}
-            />
-          </Label>
-        ))}
-      </div>
 
       {/* Submit */}
       <Button type="submit" size="l" view="action">

@@ -105,7 +105,6 @@
   }
 
   .g-button {
-    top: -1rem;
     &_view_action {
       color: white;
       width: 100%;
@@ -117,10 +116,29 @@
     }
   }
   .tags-section {
+    width: 100%;
     align-self: flex-start;
     display: flex;
-    flex-direction: column;
-    row-gap: 1.250rem;
+    flex-direction: row;
+    column-gap: 0.825rem;
+    align-items: center;
+
+    .g-text-input {
+      width: 40%;
+    }
+
+    .g-button {
+      padding: 0;
+      max-width: fit-content;
+    }
+
+    & .tags-list {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      width: 100%;
+      gap: 0.5rem;
+    }
   }
 }
 
@@ -147,3 +165,4 @@ label[class*='g-checkbox_checked'] > .g-checkbox__indicator::before {
 .g-user-label__text {
   line-height: 1.5em;
 }
+
