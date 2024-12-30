@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Button, Icon, Label, TextArea, TextInput } from '@gravity-ui/uikit';
-import { Pencil, SquarePlus } from '@gravity-ui/icons'; // Импортируем Pencil
+import { Pencil, SquarePlus } from '@gravity-ui/icons';
+import { useCreateArticleMutation } from '@services/ConduitAPI';
+import { useNavigate } from 'react-router'; // Импортируем useNavigate
 import '@styles/Sign.less';
 
 export default function CreateArticle() {
+  const [createArticle, { isLoading }] = useCreateArticleMutation();
+  const navigate = useNavigate(); // Инициализируем навигацию
   const {
     control,
     handleSubmit,
@@ -21,19 +25,17 @@ export default function CreateArticle() {
   const addTag = () => {
     const newTag = getValues('tag').trim();
 
-    if (newTag.length > 12) return; // Проверка на длину тега
+    if (newTag.length > 12) return;
 
     if (editIndex !== null) {
-      // Редактирование существующего тега
       const updatedTags = [...tags];
       updatedTags[editIndex] = newTag;
       setTags(updatedTags);
       setEditIndex(null);
     } else if (newTag) {
-      // Добавление нового тега
       setTags([...tags, newTag]);
     }
-    setValue('tag', ''); // Очистить поле ввода
+    setValue('tag', '');
   };
 
   const removeTag = index => {
@@ -42,14 +44,25 @@ export default function CreateArticle() {
   };
 
   const editTag = index => {
-    setValue('tag', tags[index]); // Поместить тег в поле ввода
-    setEditIndex(index); // Установить индекс редактируемого тега
+    setValue('tag', tags[index]);
+    setEditIndex(index);
   };
 
-  const onSubmit = data => {
+  const onSubmit = async data => {
     const { title, description, text } = data;
-    console.log('Создание статьи:', { title, description, text, tags });
-    // Здесь нужно добавить обработчик отправки статьи на сервер
+
+    try {
+      await createArticle({
+        title,
+        description,
+        body: text,
+        tagList: tags,
+      }).unwrap();
+      console.log('Статья успешно создана');
+      navigate('/articles'); // Перенаправляем на страницу со статьями
+    } catch (error) {
+      console.error('Ошибка создания статьи:', error);
+    }
   };
 
   return (
@@ -131,8 +144,7 @@ export default function CreateArticle() {
           )}
         />
         <Button type="button" onClick={addTag} size="m" view="flat">
-          <Icon size={20} data={editIndex !== null ? Pencil : SquarePlus} />{' '}
-          {/* Меняем иконку */}
+          <Icon size={20} data={editIndex !== null ? Pencil : SquarePlus} />
         </Button>
         <div className="tags-list">
           {tags.map((tag, index) => (
@@ -149,8 +161,8 @@ export default function CreateArticle() {
       </section>
 
       {/* Submit */}
-      <Button type="submit" size="l" view="action">
-        Создать статью
+      <Button type="submit" size="l" view="action" disabled={isLoading}>
+        {isLoading ? 'Создание...' : 'Создать статью'}
       </Button>
     </form>
   );

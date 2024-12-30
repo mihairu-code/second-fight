@@ -57,10 +57,25 @@ export const ConduitAPI = createApi({
         },
       }),
     }),
+    createArticle: builder.mutation({
+      query: ({ title, description, body, tagList }) => ({
+        url: '/articles',
+        method: 'POST',
+        body: {
+          article: {
+            title,
+            description,
+            body,
+            tagList,
+          },
+        },
+      }),
+    }),
   }),
 });
 
 export const {
+  useCreateArticleMutation,
   useLoginMutation,
   useGetArticlesQuery,
   useGetArticleBySlugQuery,
