@@ -71,6 +71,12 @@ export const ConduitAPI = createApi({
         },
       }),
     }),
+    deleteArticle: builder.mutation({
+      query: slug => ({
+        url: `/articles/${slug}`,
+        method: 'DELETE',
+      }),
+    }),
   }),
 });
 
@@ -81,4 +87,5 @@ export const {
   useGetArticleBySlugQuery,
   useRegisterUserMutation,
   useUpdateUserMutation,
+  useDeleteArticleMutation,
 } = ConduitAPI;

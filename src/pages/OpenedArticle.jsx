@@ -1,12 +1,14 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import ReactMarkdown from 'react-markdown';
-import { Label, Text, User } from '@gravity-ui/uikit';
+import { Button, Label, Text, User } from '@gravity-ui/uikit';
 import { Heart } from '@gravity-ui/icons';
 
 import '@styles/OpenedArticle.less';
-import { randomColorTags, formatDate } from '@utils/cardFunctions';
+import { formatDate, randomColorTags } from '@utils/cardFunctions';
 import useOnClickOutside from '../../hooks/useOnClickOutside.jsx';
+import { useDeleteArticleMutation } from '@services/ConduitAPI.js';
+import { useSelector } from 'react-redux';
 
 export default function OpenedArticle() {
   const { state } = useLocation();
@@ -20,6 +22,7 @@ export default function OpenedArticle() {
   } = state || {};
 
   const {
+    slug,
     title = 'No title',
     description = '',
     body = 'No content available.',
@@ -32,6 +35,24 @@ export default function OpenedArticle() {
 
   // Хук для обработки кликов вне статьи
   useOnClickOutside(cardRef, () => navigate(`/articles?page=${fromPage}`));
+
+  const currentUser = useSelector(state => state.auth?.user?.username);
+
+  const [deleteArticle] = useDeleteArticleMutation();
+
+  // Обработчик удаления
+  const handleDelete = async () => {
+    try {
+      await deleteArticle(slug).unwrap();
+      navigate(`/articles?page=${fromPage}`); // Возвращаемся на страницу со статьями
+    } catch (error) {
+      console.error('Ошибка при удалении статьи:', error);
+    }
+  };
+
+  const handleEdit = () => {
+    navigate(`/articles/edit/${slug}`, { state: { data } });
+  };
 
   return (
     <article className="article-card article_opened" ref={cardRef}>
@@ -74,6 +95,16 @@ export default function OpenedArticle() {
         description={formatDate(updatedAt)}
         size="l"
       />
+      {currentUser === username && (
+        <section className="edit-article">
+          <Button onClick={handleDelete} view="outlined-danger">
+            Удалить
+          </Button>
+          <Button onClick={handleEdit} view="outlined-success">
+            Редактировать
+          </Button>
+        </section>
+      )}
     </article>
   );
 }
