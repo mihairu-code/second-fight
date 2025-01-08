@@ -13,6 +13,26 @@
     transform: none;
   }
 
+  & .section-title {
+    & .like {
+      cursor: pointer;
+      align-self: center;
+      color: transparent;
+      transition: color 0.3s ease-in-out, transform 0.3s ease-in-out;
+      &:hover {
+        transform: scale(111%);
+        color: rgba(255, 0, 0, 0.25);
+      }
+      &.liked {
+        color: red;
+        &:hover {
+          color: rgba(255, 0, 0, 0.78);
+          transform: scale(111%);
+        }
+      }
+    }
+  }
+
   & .card-text,
   .tag-list {
     opacity: 0.6;
@@ -44,6 +64,38 @@
     right: 1rem;
     display: flex;
     justify-content: space-between;
+  }
+}
+
+.popup-delete {
+  & .g-popup__content {
+    & .popup-content {
+      position: relative;
+      width: 15rem;
+      padding: 1rem 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      & .popup-text {
+        margin-left: 1.5rem;
+        text-align: start;
+      }
+      & .popup-actions {
+        display: flex;
+        justify-content: flex-end;
+        column-gap: 0.5rem;
+        & .del-button {
+          --_--text-color: white;
+          --_--background-color: rgba(24, 144, 255, 1);
+          --_--background-color-hover: rgb(23, 134, 237);
+          --_--focus-outline-color: rgb(23, 134, 237);
+        }
+      }
+      & .exlamation-sign {
+        position: absolute;
+        color: rgb(255, 145, 0);
+      }
+    }
   }
 }
 

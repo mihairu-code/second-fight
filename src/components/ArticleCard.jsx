@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Label, Text, User } from '@gravity-ui/uikit';
-import { Heart } from '@gravity-ui/icons';
+import { HeartFill } from '@gravity-ui/icons';
 import { Link } from 'react-router';
 
 import '@styles/ArticleCard.less';
 import { formatDate, randomColorTags } from '@utils/cardFunctions';
+import {
+  useFavoriteArticleMutation,
+  useUnfavoriteArticleMutation,
+} from '@services/ConduitAPI.js';
 
 export default function ArticleCard({ data = {}, currentPage }) {
   const {
@@ -15,9 +19,29 @@ export default function ArticleCard({ data = {}, currentPage }) {
     updatedAt,
     tagList = [],
     author = {},
+    favorited = false, // начальное состояние из пропсов
   } = data;
 
   const { username = 'Username', image = '' } = author;
+
+  const [isFavorited, setIsFavorited] = useState(favorited);
+  const [favoriteArticle] = useFavoriteArticleMutation();
+  const [unfavoriteArticle] = useUnfavoriteArticleMutation();
+
+  const toggleLike = async e => {
+    e.preventDefault(); // Чтобы клик не открывал статью
+
+    try {
+      if (isFavorited) {
+        await unfavoriteArticle(slug);
+      } else {
+        await favoriteArticle(slug);
+      }
+      setIsFavorited(!isFavorited); // Обновляем состояние
+    } catch (error) {
+      console.error('Ошибка лайка:', error);
+    }
+  };
 
   return (
     <li key={slug}>
@@ -32,7 +56,12 @@ export default function ArticleCard({ data = {}, currentPage }) {
               ? title[0]?.toUpperCase() + title.slice(1)
               : 'No title'}
           </h5>
-          <Heart className="like" />
+          <HeartFill
+            onClick={toggleLike}
+            className={`like ${isFavorited ? 'liked' : ''}`} // Класс для стилизации
+            stroke="red"
+            fill="none"
+          />
         </section>
         <ul className="tag-list">
           {tagList.map((tag, index) =>

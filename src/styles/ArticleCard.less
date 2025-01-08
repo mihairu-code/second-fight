@@ -34,7 +34,21 @@
       font-weight: 300;
     }
     & .like {
+      cursor: pointer;
       align-self: center;
+      color: transparent;
+      transition: color 0.3s ease-in-out, transform 0.3s ease-in-out;
+      &:hover {
+        transform: scale(111%);
+        color: rgba(255, 0, 0, 0.25);
+      }
+      &.liked {
+        color: red;
+        &:hover {
+          color: rgba(255, 0, 0, 0.78);
+          transform: scale(111%);
+        }
+      }
     }
   }
 

@@ -12,6 +12,7 @@ import SignUp from '@pages/SignUp.jsx';
 import SignIn from '@pages/SignIn.jsx';
 import EditProfile from '@pages/EditProfile.jsx';
 import CreateArticle from '@pages/CreateArticle.jsx';
+import EditArticle from '@pages/EditArticle.jsx';
 
 export function App() {
   const { error, isLoading } = useGetArticlesQuery({
@@ -45,6 +46,7 @@ export function App() {
         <Route path="sign-up" element={<SignUp />} />
         <Route path="profile" element={<EditProfile />} />
         <Route path="new-article" element={<CreateArticle />} />
+        <Route path="/articles/edit/:slug" element={<EditArticle />} />
       </Route>
     </Routes>
   );

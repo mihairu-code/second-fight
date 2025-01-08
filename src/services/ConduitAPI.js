@@ -77,6 +77,25 @@ export const ConduitAPI = createApi({
         method: 'DELETE',
       }),
     }),
+    updateArticle: builder.mutation({
+      query: ({ slug, ...articleData }) => ({
+        url: `articles/${slug}`,
+        method: 'PUT',
+        body: articleData,
+      }),
+    }),
+    favoriteArticle: builder.mutation({
+      query: slug => ({
+        url: `/articles/${slug}/favorite`,
+        method: 'POST',
+      }),
+    }),
+    unfavoriteArticle: builder.mutation({
+      query: slug => ({
+        url: `/articles/${slug}/favorite`,
+        method: 'DELETE',
+      }),
+    }),
   }),
 });
 
@@ -88,4 +107,7 @@ export const {
   useRegisterUserMutation,
   useUpdateUserMutation,
   useDeleteArticleMutation,
+  useUpdateArticleMutation,
+  useFavoriteArticleMutation,
+  useUnfavoriteArticleMutation,
 } = ConduitAPI;
