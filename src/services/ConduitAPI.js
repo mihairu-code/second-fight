@@ -79,7 +79,7 @@ export const ConduitAPI = createApi({
     }),
     updateArticle: builder.mutation({
       query: ({ slug, ...articleData }) => ({
-        url: `articles/${slug}`,
+        url: `/articles/${slug}`,
         method: 'PUT',
         body: articleData,
       }),

@@ -7,7 +7,6 @@ import { useSelector } from 'react-redux';
 
 import '@styles/OpenedArticle.less';
 import { formatDate, randomColorTags } from '@utils/cardFunctions';
-import useOnClickOutside from '../../hooks/useOnClickOutside.jsx';
 import {
   useDeleteArticleMutation,
   useFavoriteArticleMutation,
@@ -17,7 +16,6 @@ import {
 export default function OpenedArticle() {
   const { state } = useLocation();
   const navigate = useNavigate();
-  const cardRef = useRef(null);
   const anchorRef = useRef(null); // Реф для привязки Popup
 
   const {
@@ -37,8 +35,6 @@ export default function OpenedArticle() {
   } = data;
 
   const { username = 'Unknown', image = '' } = author;
-
-  // Локальное состояние для лайка и popup
   const [isFavorited, setIsFavorited] = useState(favorited);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
@@ -57,8 +53,9 @@ export default function OpenedArticle() {
 
   // Удаление статьи после подтверждения
   const handleDelete = async () => {
+    console.log('Удаляем статью с slug:', slug);
     try {
-      await deleteArticle({ slug }).unwrap();
+      await deleteArticle(slug).unwrap();
       navigate(`/articles?page=${fromPage}`);
     } catch (error) {
       console.error('Ошибка при удалении статьи:', error);
@@ -82,10 +79,8 @@ export default function OpenedArticle() {
     }
   };
 
-  useOnClickOutside(cardRef, () => navigate(`/articles?page=${fromPage}`));
-
   return (
-    <article className="article-card article_opened" ref={cardRef}>
+    <article className="article-card article_opened">
       <section className="section-title">
         <h5 className="article-title">
           {title[0]?.toUpperCase() + title.slice(1)}
@@ -154,6 +149,7 @@ export default function OpenedArticle() {
         placement="right" // Popup появляется снизу
         hasArrow // Добавляем стрелочку
         className="popup-delete"
+        onBlur={closePopup} // ⬅ Закрываем Popup, если он теряет фокус
       >
         <div className="popup-content">
           <CircleExclamationFill className="exlamation-sign" />
@@ -164,7 +160,14 @@ export default function OpenedArticle() {
             <Button onClick={closePopup} view="outlined">
               Нет
             </Button>
-            <Button className="del-button" onClick={handleDelete} view="action">
+            <Button
+              className="del-button"
+              onClick={e => {
+                e.stopPropagation(); // Предотвращаем всплытие
+                handleDelete();
+              }}
+              view="action"
+            >
               Да
             </Button>
           </div>
