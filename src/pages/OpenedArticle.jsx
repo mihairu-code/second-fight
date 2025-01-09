@@ -1,59 +1,64 @@
 import React, { useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import ReactMarkdown from 'react-markdown';
-import { Button, Label, Popup, Text, User } from '@gravity-ui/uikit';
+import { Button, Popup, Text, User } from '@gravity-ui/uikit';
 import { CircleExclamationFill, HeartFill } from '@gravity-ui/icons';
 import { useSelector } from 'react-redux';
-
-import '@styles/OpenedArticle.less';
-import { formatDate, randomColorTags } from '@utils/cardFunctions';
 import {
   useDeleteArticleMutation,
   useFavoriteArticleMutation,
   useUnfavoriteArticleMutation,
 } from '@services/ConduitAPI.js';
+import { formatDate } from '@utils/cardFunctions';
+import {
+  capitalizeFirstLetter,
+  renderTags,
+  toggleFavorite,
+} from '@utils/cardFunctions.jsx';
 
-export default function OpenedArticle() {
+import '@styles/OpenedArticle.less';
+
+const OpenedArticle = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
-  const anchorRef = useRef(null); // Реф для привязки Popup
+  const anchorRef = useRef(null);
 
-  const {
-    data = {},
-    fromPage = 1, // Номер страницы для возврата
-  } = state || {};
-
+  const { data = {}, fromPage = 1 } = state || {};
   const {
     slug,
-    title = 'No title',
-    description = '',
-    body = 'No content available.',
+    title,
+    description,
+    body,
     updatedAt,
-    tagList = [],
+    tagList,
     author = {},
-    favorited = false,
+    favorited,
   } = data;
+  const { username, image } = author;
 
-  const { username = 'Unknown', image = '' } = author;
   const [isFavorited, setIsFavorited] = useState(favorited);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-
-  // RTK Query мутации
   const [deleteArticle] = useDeleteArticleMutation();
   const [favoriteArticle] = useFavoriteArticleMutation();
   const [unfavoriteArticle] = useUnfavoriteArticleMutation();
 
   const currentUser = useSelector(state => state.auth?.user?.username);
 
-  // Открытие popup
-  const openPopup = () => setIsPopupOpen(true);
+  const handleToggleLike = async e => {
+    e.preventDefault();
+    toggleFavorite(
+      isFavorited,
+      slug,
+      favoriteArticle,
+      unfavoriteArticle,
+      setIsFavorited,
+    );
+  };
 
-  // Закрытие popup
+  const openPopup = () => setIsPopupOpen(true);
   const closePopup = () => setIsPopupOpen(false);
 
-  // Удаление статьи после подтверждения
   const handleDelete = async () => {
-    console.log('Удаляем статью с slug:', slug);
     try {
       await deleteArticle(slug).unwrap();
       navigate(`/articles?page=${fromPage}`);
@@ -64,57 +69,28 @@ export default function OpenedArticle() {
     }
   };
 
-  const toggleLike = async e => {
-    e.preventDefault();
-
-    try {
-      if (isFavorited) {
-        await unfavoriteArticle(slug).unwrap();
-      } else {
-        await favoriteArticle(slug).unwrap();
-      }
-      setIsFavorited(!isFavorited);
-    } catch (error) {
-      console.error('Ошибка лайка:', error);
-    }
-  };
-
   return (
     <article className="article-card article_opened">
       <section className="section-title">
-        <h5 className="article-title">
-          {title[0]?.toUpperCase() + title.slice(1)}
-        </h5>
+        <h5 className="article-title">{capitalizeFirstLetter(title)}</h5>
         <HeartFill
+          onClick={handleToggleLike}
           className={`like ${isFavorited ? 'liked' : ''}`}
-          onClick={toggleLike}
           stroke="red"
           fill="none"
         />
       </section>
-      <ul className="tag-list">
-        {tagList.length > 0
-          ? tagList.map((tag, index) =>
-              tag !== '' ? (
-                <li key={index}>
-                  <Label className="tag" theme={randomColorTags(tag)}>
-                    {tag[0]?.toUpperCase() + tag.slice(1)}
-                  </Label>
-                </li>
-              ) : null,
-            )
-          : null}
-      </ul>
+      {renderTags(tagList)}
       <Text
         className="card-text"
         whiteSpace="break-spaces"
         ellipsis
         variant="caption-2"
       >
-        {description[0]?.toUpperCase() + description.slice(1)}
+        {capitalizeFirstLetter(description)}
       </Text>
       <ReactMarkdown className="card__body_text">
-        {body[0]?.toUpperCase() + body.slice(1)}
+        {capitalizeFirstLetter(body)}
       </ReactMarkdown>
       <User
         className="card-user"
@@ -126,7 +102,6 @@ export default function OpenedArticle() {
 
       {currentUser === username && (
         <section className="edit-article">
-          {/* Кнопка удаления с привязкой Popup */}
           <Button ref={anchorRef} onClick={openPopup} view="outlined-danger">
             Удалить
           </Button>
@@ -141,15 +116,13 @@ export default function OpenedArticle() {
         </section>
       )}
 
-      {/* Popup подтверждения удаления */}
       <Popup
         open={isPopupOpen}
         onClose={closePopup}
-        anchorRef={anchorRef} // Привязываем к кнопке "Удалить"
-        placement="right" // Popup появляется снизу
-        hasArrow // Добавляем стрелочку
+        anchorRef={anchorRef}
+        placement="right"
+        hasArrow
         className="popup-delete"
-        onBlur={closePopup} // ⬅ Закрываем Popup, если он теряет фокус
       >
         <div className="popup-content">
           <CircleExclamationFill className="exlamation-sign" />
@@ -160,14 +133,7 @@ export default function OpenedArticle() {
             <Button onClick={closePopup} view="outlined">
               Нет
             </Button>
-            <Button
-              className="del-button"
-              onClick={e => {
-                e.stopPropagation(); // Предотвращаем всплытие
-                handleDelete();
-              }}
-              view="action"
-            >
+            <Button className="del-button" onClick={handleDelete} view="action">
               Да
             </Button>
           </div>
@@ -175,4 +141,6 @@ export default function OpenedArticle() {
       </Popup>
     </article>
   );
-}
+};
+
+export default OpenedArticle;

@@ -1,46 +1,46 @@
 import React, { useState } from 'react';
-import { Label, Text, User } from '@gravity-ui/uikit';
+import { Text, User } from '@gravity-ui/uikit';
 import { HeartFill } from '@gravity-ui/icons';
 import { Link } from 'react-router';
-
-import '@styles/ArticleCard.less';
-import { formatDate, randomColorTags } from '@utils/cardFunctions';
 import {
   useFavoriteArticleMutation,
   useUnfavoriteArticleMutation,
 } from '@services/ConduitAPI.js';
+import {
+  capitalizeFirstLetter,
+  formatDate,
+  renderTags,
+  toggleFavorite,
+} from '@utils/cardFunctions.jsx';
 
-export default function ArticleCard({ data = {}, currentPage }) {
+import '@styles/ArticleCard.less';
+
+const ArticleCard = ({ data = {}, currentPage }) => {
   const {
-    slug = '',
-    title = 'No title',
-    description = '',
+    slug,
+    title,
+    description,
     createdAt,
     updatedAt,
-    tagList = [],
+    tagList,
     author = {},
-    favorited = false, // начальное состояние из пропсов
+    favorited,
   } = data;
-
-  const { username = 'Username', image = '' } = author;
+  const { username, image } = author;
 
   const [isFavorited, setIsFavorited] = useState(favorited);
   const [favoriteArticle] = useFavoriteArticleMutation();
   const [unfavoriteArticle] = useUnfavoriteArticleMutation();
 
-  const toggleLike = async e => {
-    e.preventDefault(); // Чтобы клик не открывал статью
-
-    try {
-      if (isFavorited) {
-        await unfavoriteArticle(slug);
-      } else {
-        await favoriteArticle(slug);
-      }
-      setIsFavorited(!isFavorited); // Обновляем состояние
-    } catch (error) {
-      console.error('Ошибка лайка:', error);
-    }
+  const handleToggleLike = async e => {
+    e.preventDefault();
+    await toggleFavorite(
+      isFavorited,
+      slug,
+      favoriteArticle,
+      unfavoriteArticle,
+      setIsFavorited,
+    );
   };
 
   return (
@@ -51,49 +51,33 @@ export default function ArticleCard({ data = {}, currentPage }) {
         className="article-card"
       >
         <section className="section-title">
-          <h5 className="article-title">
-            {title !== ''
-              ? title[0]?.toUpperCase() + title.slice(1)
-              : 'No title'}
-          </h5>
+          <h5 className="article-title">{capitalizeFirstLetter(title)}</h5>
           <HeartFill
-            onClick={toggleLike}
-            className={`like ${isFavorited ? 'liked' : ''}`} // Класс для стилизации
+            onClick={handleToggleLike}
+            className={`like ${isFavorited ? 'liked' : ''}`}
             stroke="red"
             fill="none"
           />
         </section>
-        <ul className="tag-list">
-          {tagList.map((tag, index) =>
-            tag !== '' ? (
-              <li key={index}>
-                <Label
-                  className="tag"
-                  theme={randomColorTags(tag)}
-                  children={tag[0]?.toUpperCase() + tag.slice(1)}
-                />
-              </li>
-            ) : null,
-          )}
-        </ul>
+        {renderTags(tagList)}
         <Text
           className="card-text"
           whiteSpace="break-spaces"
           ellipsis
           variant="caption-2"
         >
-          {description !== ''
-            ? description[0]?.toUpperCase() + description.slice(1)
-            : 'No text'}
+          {capitalizeFirstLetter(description)}
         </Text>
         <User
           className="card-user"
           avatar={{ imgUrl: image, loading: 'eager' }}
-          name={username[0]?.toUpperCase() + username.slice(1)}
+          name={username}
           description={formatDate(updatedAt || createdAt)}
           size="l"
         />
       </Link>
     </li>
   );
-}
+};
+
+export default ArticleCard;
