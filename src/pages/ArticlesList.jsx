@@ -1,11 +1,8 @@
 import React from 'react';
 import { useSearchParams } from 'react-router';
 import { Pagination, Skeleton } from '@gravity-ui/uikit';
-
 import ArticleCard from '@components/ArticleCard';
-
 import '@styles/ArticlesList.less';
-
 import { useGetArticlesQuery } from '@services/ConduitAPI';
 
 export default function ArticlesList() {
@@ -36,7 +33,7 @@ export default function ArticlesList() {
     return <div>Ошибка загрузки: {error.message || 'Неизвестная ошибка'}</div>;
   }
 
-  if (!isLoading && articles.length === 0) {
+  if (!articles.length) {
     return <div>Статей нет.</div>;
   }
 

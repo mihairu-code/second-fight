@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, UserLabel } from '@gravity-ui/uikit';
 import { Link, Outlet } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
-import { clearAuth } from '@store/store.js';
+import { clearAuth } from '@store/authSlice.js';
 import '../styles/Header.less';
 
 export default function Header() {

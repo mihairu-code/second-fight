@@ -3,7 +3,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { Button, TextInput } from '@gravity-ui/uikit';
 import { useDispatch } from 'react-redux';
 import { useLoginMutation } from '@services/ConduitAPI'; // Хук для входа в систему
-import { setAuth } from '@store/store.js'; // Действие для установки аутентификации
+import { setAuth } from '@store/authSlice.js'; // Действие для установки аутентификации
 import '@styles/Sign.less';
 import { Link, useNavigate } from 'react-router';
 import { toaster } from '@gravity-ui/uikit/toaster-singleton-react-18';

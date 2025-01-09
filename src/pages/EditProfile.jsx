@@ -5,7 +5,7 @@ import { Button, TextInput } from '@gravity-ui/uikit';
 import { toaster } from '@gravity-ui/uikit/toaster-singleton-react-18';
 import '@styles/Sign.less';
 import { useUpdateUserMutation } from '@services/ConduitAPI.js';
-import { setAuth } from '@store/store.js';
+import { setAuth } from '@store/authSlice.js';
 
 export default function EditProfile() {
   const { user } = useSelector(state => state.auth);
