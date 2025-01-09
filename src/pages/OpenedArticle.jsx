@@ -69,9 +69,9 @@ export default function OpenedArticle() {
 
     try {
       if (isFavorited) {
-        await unfavoriteArticle({ slug }).unwrap();
+        await unfavoriteArticle(slug).unwrap();
       } else {
-        await favoriteArticle({ slug }).unwrap();
+        await favoriteArticle(slug).unwrap();
       }
       setIsFavorited(!isFavorited);
     } catch (error) {
@@ -103,7 +103,7 @@ export default function OpenedArticle() {
                 </li>
               ) : null,
             )
-          : 'No tags'}
+          : null}
       </ul>
       <Text
         className="card-text"
