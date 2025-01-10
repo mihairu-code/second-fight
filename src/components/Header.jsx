@@ -20,12 +20,12 @@ export default function Header() {
       <>
         <Link className="header__link margin_link" to="/sign-in">
           <Button view="flat" size="xl">
-            Sign In
+            Войти
           </Button>
         </Link>
         <Link className="header__link" to="/sign-up">
           <Button view="outlined-success" size="xl">
-            Sign Up
+            Регистрация
           </Button>
         </Link>
       </>

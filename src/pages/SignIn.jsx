@@ -1,25 +1,27 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Button, TextInput } from '@gravity-ui/uikit';
-import { useDispatch } from 'react-redux';
-import { useLoginMutation } from '@services/ConduitAPI'; // Хук для входа в систему
-import { setAuth } from '@store/authSlice.js'; // Действие для установки аутентификации
-import '@styles/Sign.less';
 import { Link, useNavigate } from 'react-router';
 import { toaster } from '@gravity-ui/uikit/toaster-singleton-react-18';
+import { useLoginMutation } from '@services/ConduitAPI';
+import { useDispatch } from 'react-redux';
+import { setAuth } from '@store/authSlice.js';
+import '@styles/Sign.less';
 
 export default function SignIn() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [loginUser, { isLoading }] = useLoginMutation(); // Хук для входа пользователя
+  const [loginUser, { isLoading }] = useLoginMutation();
 
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm({
-    mode: 'onChange', // Включаем валидацию на каждом изменении
-  });
+  } = useForm({ mode: 'onChange' });
+
+  const showToast = useCallback((name, title, content, theme = 'danger') => {
+    toaster.add({ name, title, content, theme, autoHiding: 5000 });
+  }, []);
 
   const onSubmit = async data => {
     try {
@@ -31,98 +33,69 @@ export default function SignIn() {
       // eslint-disable-next-line no-undef
       localStorage.setItem(
         'auth',
-        JSON.stringify({
-          token: response.user.token,
-          user: response.user,
-        }),
+        JSON.stringify({ token: response.user.token, user: response.user }),
       );
+      dispatch(setAuth({ token: response.user.token, user: response.user }));
 
-      // Сохраняем токен и данные о пользователе в Redux
-      dispatch(
-        setAuth({
-          token: response.user.token,
-          user: response.user,
-        }),
+      showToast(
+        'login-success',
+        'Успешный вход',
+        'Вы успешно вошли!',
+        'success',
       );
-
-      // Перенаправляем пользователя на главную страницу
-      navigate('/'); // или на нужную страницу после входа
+      navigate('/');
     } catch (error) {
-      let errorMessage = 'Неизвестная ошибка';
-
-      if (error.data?.errors) {
-        if (typeof error.data.errors === 'object') {
-          // Обработка объекта ошибок
-          errorMessage = Object.entries(error.data.errors)
-            .map(([key, value]) =>
-              Array.isArray(value)
-                ? `${key}: ${value.join(', ')}`
-                : `${key}: ${value}`,
+      const errorMessage = error?.data?.errors
+        ? Object.entries(error.data.errors)
+            .map(
+              ([key, value]) =>
+                `${key}: ${Array.isArray(value) ? value.join(', ') : value}`,
             )
-            .join('\n');
-        } else {
-          // Если errors — это строка или другой тип
-          errorMessage = String(error.data.errors);
-        }
-      }
+            .join('\n')
+        : 'Неизвестная ошибка';
 
-      toaster.add({
-        title: 'Ошибка входа',
-        message: errorMessage,
-        type: 'error',
-      });
+      showToast('login-error', 'Ошибка входа', errorMessage);
     }
   };
+
+  const renderInput = (name, placeholder, type = 'text', validation = {}) => (
+    <Controller
+      name={name}
+      control={control}
+      defaultValue=""
+      rules={validation}
+      render={({ field }) => {
+        const hasError = !!errors[name] && field.value !== '';
+        return (
+          <TextInput
+            {...field}
+            placeholder={placeholder}
+            note={!hasError && field.value ? placeholder : undefined}
+            type={type}
+            error={hasError}
+            errorMessage={hasError ? errors[name]?.message : ''}
+          />
+        );
+      }}
+    />
+  );
 
   return (
     <form className="sign-in" onSubmit={handleSubmit(onSubmit)}>
       <h1>Вход</h1>
 
-      {/* Email */}
-      <Controller
-        name="email"
-        control={control}
-        defaultValue=""
-        rules={{
-          required: 'Email обязателен',
-          pattern: {
-            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-            message: 'Некорректный email',
-          },
-        }}
-        render={({ field }) => (
-          <TextInput
-            {...field}
-            placeholder="Email"
-            note={field.value ? 'Email' : undefined} // Отображаем label, если есть значение
-            type="email"
-            error={!!errors.email && field.value !== ''}
-            errorMessage={field.value !== '' ? errors.email?.message : ''}
-          />
-        )}
-      />
+      {renderInput('email', 'Email', 'email', {
+        required: 'Email обязателен',
+        pattern: {
+          value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+          message: 'Некорректный email',
+        },
+      })}
 
-      {/* Password */}
-      <Controller
-        name="password"
-        control={control}
-        defaultValue=""
-        rules={{
-          required: 'Пароль обязателен',
-        }}
-        render={({ field }) => (
-          <TextInput
-            {...field}
-            placeholder="Пароль"
-            note={field.value ? 'Пароль' : undefined}
-            type="password"
-            error={!!errors.password && field.value !== ''}
-            errorMessage={field.value !== '' ? errors.password?.message : ''}
-          />
-        )}
-      />
+      {renderInput('password', 'Пароль', 'password', {
+        required: 'Пароль обязателен',
+      })}
 
-      {/* Submit */}
       <section className="button-area">
         <Button
           className="login-button"

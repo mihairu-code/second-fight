@@ -13,20 +13,17 @@ export const ConduitAPI = createApi({
     },
   }),
   endpoints: builder => ({
-    // Получение списка статей
     getArticles: builder.query({
       query: ({ limit = 10, offset = 0 }) => ({
         url: '/articles',
         params: { limit, offset },
       }),
     }),
-    // Получение статьи по slug
     getArticleBySlug: builder.query({
       query: slug => ({
         url: `/articles/${slug}`,
       }),
     }),
-    // Регистрация пользователя
     registerUser: builder.mutation({
       query: ({ username, email, password }) => ({
         url: '/users',
@@ -34,7 +31,6 @@ export const ConduitAPI = createApi({
         body: { user: { username, email, password } },
       }),
     }),
-    // Авторизация пользователя
     login: builder.mutation({
       query: ({ email, password }) => ({
         url: '/users/login',
@@ -42,7 +38,6 @@ export const ConduitAPI = createApi({
         body: { user: { email, password } },
       }),
     }),
-    // Обновление профиля пользователя
     updateUser: builder.mutation({
       query: ({ username, email, avatar, password }) => ({
         url: '/user',
