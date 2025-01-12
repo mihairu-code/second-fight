@@ -1,19 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Text, User } from '@gravity-ui/uikit';
-import { HeartFill } from '@gravity-ui/icons';
 import { Link } from 'react-router';
-import {
-  useFavoriteArticleMutation,
-  useUnfavoriteArticleMutation,
-} from '@services/ConduitAPI.js';
 import {
   capitalizeFirstLetter,
   formatDate,
   renderTags,
-  toggleFavorite,
 } from '@utils/cardFunctions.jsx';
 
 import '@styles/ArticleCard.less';
+import ArticleHeader from '@components/ArticleHeader.jsx';
 
 const ArticleCard = ({ data = {}, currentPage }) => {
   const {
@@ -28,21 +23,6 @@ const ArticleCard = ({ data = {}, currentPage }) => {
   } = data;
   const { username, image } = author;
 
-  const [isFavorited, setIsFavorited] = useState(favorited);
-  const [favoriteArticle] = useFavoriteArticleMutation();
-  const [unfavoriteArticle] = useUnfavoriteArticleMutation();
-
-  const handleToggleLike = async e => {
-    e.preventDefault();
-    await toggleFavorite(
-      isFavorited,
-      slug,
-      favoriteArticle,
-      unfavoriteArticle,
-      setIsFavorited,
-    );
-  };
-
   return (
     <li key={slug}>
       <Link
@@ -50,15 +30,7 @@ const ArticleCard = ({ data = {}, currentPage }) => {
         state={{ data, fromPage: currentPage }}
         className="article-card"
       >
-        <section className="section-title">
-          <h5 className="article-title">{capitalizeFirstLetter(title)}</h5>
-          <HeartFill
-            onClick={handleToggleLike}
-            className={`like ${isFavorited ? 'liked' : ''}`}
-            stroke="red"
-            fill="none"
-          />
-        </section>
+        <ArticleHeader favorited={favorited} slug={slug} title={title} />
         {renderTags(tagList)}
         <Text
           className="card-text"
