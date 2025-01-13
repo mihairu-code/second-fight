@@ -81,15 +81,20 @@ const handleTagUpdate = (
   setEditIndex,
 ) => {
   const newTag = getValues('tag').trim();
-  if (newTag.length > 12) return;
+  if (!newTag || newTag.length > 12) return;
 
   if (editIndex !== null) {
+    // Редактирование тега
     const updatedTags = [...tags];
     updatedTags[editIndex] = newTag;
     setTags(updatedTags);
     setEditIndex(null);
-  } else if (newTag) {
-    setTags([...tags, newTag]);
+  } else {
+    // Добавление нового тега
+    // eslint-disable-next-line no-lonely-if
+    if (!tags.includes(newTag)) {
+      setTags([...tags, newTag]);
+    }
   }
 
   setValue('tag', '');

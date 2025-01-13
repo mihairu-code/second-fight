@@ -5,10 +5,9 @@ import {
   capitalizeFirstLetter,
   formatDate,
   renderTags,
-} from '@utils/cardFunctions.jsx';
-
+} from '@utils/cardFunctions';
 import '@styles/ArticleCard.less';
-import ArticleHeader from '@components/ArticleHeader.jsx';
+import ArticleHeader from '@components/ArticleHeader';
 
 const ArticleCard = ({ data = {}, currentPage }) => {
   const {

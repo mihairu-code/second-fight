@@ -1,13 +1,15 @@
 import React, { useCallback, useMemo } from 'react';
-import { useSearchParams } from 'react-router'; // Исправлен импорт
+import { useDispatch, useSelector } from 'react-redux';
 import { Pagination, Skeleton } from '@gravity-ui/uikit';
 import ArticleCard from '@components/ArticleCard';
-import '@styles/ArticlesList.less';
 import { useGetArticlesQuery } from '@services/ConduitAPI';
+import { setPage } from '@store/articleSlice.js';
+
+import '@styles/ArticlesList.less';
 
 export default function ArticlesList() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const page = Number(searchParams.get('page')) || 1;
+  const dispatch = useDispatch();
+  const page = useSelector(state => state.article.page);
   const pageSize = 5;
   const offset = useMemo(() => (page - 1) * pageSize, [page]);
 
@@ -19,8 +21,10 @@ export default function ArticlesList() {
   const total = useMemo(() => data?.articlesCount || 0, [data]);
 
   const handlePageChange = useCallback(
-    newPage => setSearchParams({ page: newPage }),
-    [setSearchParams],
+    newPage => {
+      dispatch(setPage(newPage));
+    },
+    [dispatch],
   );
 
   if (isLoading) {
@@ -41,7 +45,7 @@ export default function ArticlesList() {
     <>
       <ul className="list">
         {articles.map(article => (
-          <ArticleCard key={article.slug} data={article} currentPage={page} />
+          <ArticleCard key={article.slug} data={article} />
         ))}
       </ul>
       {total > pageSize && (

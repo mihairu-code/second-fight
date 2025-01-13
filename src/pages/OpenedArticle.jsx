@@ -1,21 +1,50 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useLocation } from 'react-router';
 import ReactMarkdown from 'react-markdown';
 import { Text, User } from '@gravity-ui/uikit';
-import { useSelector } from 'react-redux';
-import { formatDate } from '@utils/cardFunctions';
-import { capitalizeFirstLetter, renderTags } from '@utils/cardFunctions.jsx';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { setCurrentArticle } from '@store/articleSlice';
+import { useGetArticleBySlugQuery } from '@services/ConduitAPI';
+import {
+  capitalizeFirstLetter,
+  formatDate,
+  renderTags,
+} from '@utils/cardFunctions';
 import '@styles/OpenedArticle.less';
-import ArticleHeader from '@components/ArticleHeader.jsx';
-import ExtraButtons from '@components/ExtraButtons.jsx';
+import ArticleHeader from '@components/ArticleHeader';
+import ExtraButtons from '@components/ExtraButtons';
 
 const OpenedArticle = () => {
   const { state } = useLocation();
+  const { slug } = state.data;
+  const dispatch = useDispatch();
 
-  const { data = {}, fromPage = 1 } = state || {};
+  // Запрос статьи по slug
+  const { data, error, isLoading } = useGetArticleBySlugQuery(slug);
+
+  // Сохраняем статью в Redux
+  useEffect(() => {
+    if (data) {
+      dispatch(setCurrentArticle(data.article));
+    }
+  }, [dispatch, data]);
+
+  const currentArticle = useSelector(state => state.article.currentArticle);
+  const currentUser = useSelector(state => state.auth?.user?.username);
+
+  if (isLoading) {
+    return <div>Загрузка статьи...</div>;
+  }
+
+  if (error) {
+    return <div>Ошибка загрузки: {error.message || 'Неизвестная ошибка'}</div>;
+  }
+
+  if (!currentArticle) {
+    return <div>Статья не найдена.</div>;
+  }
+
   const {
-    slug,
     title,
     description,
     body,
@@ -23,10 +52,8 @@ const OpenedArticle = () => {
     tagList,
     author = {},
     favorited,
-  } = data;
+  } = currentArticle;
   const { username, image } = author;
-
-  const currentUser = useSelector(state => state.auth?.user?.username);
 
   return (
     <article className="article-card article_opened">
@@ -51,7 +78,7 @@ const OpenedArticle = () => {
         size="l"
       />
       {currentUser === username && (
-        <ExtraButtons slug={slug} fromPage={fromPage} data={data} />
+        <ExtraButtons slug={slug} data={currentArticle} />
       )}
     </article>
   );
