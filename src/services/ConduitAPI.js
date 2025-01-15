@@ -5,24 +5,25 @@ export const ConduitAPI = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: 'https://blog-platform.kata.academy/api',
     prepareHeaders: (headers, { getState }) => {
-      const token = getState().auth?.token; // Получаем токен из состояния
+      const token = getState().auth?.token;
       if (token) {
         headers.set('Authorization', `Token ${token}`);
       }
       return headers;
     },
   }),
+  tagTypes: ['Articles, Article'],
   endpoints: builder => ({
     getArticles: builder.query({
       query: ({ limit = 10, offset = 0 }) => ({
         url: '/articles',
         params: { limit, offset },
       }),
+      providesTags: ['Articles', 'Article'],
     }),
     getArticleBySlug: builder.query({
-      query: slug => ({
-        url: `/articles/${slug}`,
-      }),
+      query: slug => `/articles/${slug}`,
+      providesTags: (result, error, slug) => [{ type: 'Article', id: slug }],
     }),
     registerUser: builder.mutation({
       query: ({ username, email, password }) => ({
@@ -56,40 +57,46 @@ export const ConduitAPI = createApi({
       query: ({ title, description, body, tagList }) => ({
         url: '/articles',
         method: 'POST',
-        body: {
-          article: {
-            title,
-            description,
-            body,
-            tagList,
-          },
-        },
+        body: { article: { title, description, body, tagList } },
       }),
+      invalidatesTags: ['Article'],
     }),
     deleteArticle: builder.mutation({
       query: slug => ({
         url: `/articles/${slug}`,
         method: 'DELETE',
       }),
+      invalidatesTags: ['Article'],
     }),
     updateArticle: builder.mutation({
-      query: ({ slug, ...articleData }) => ({
+      query: ({ slug, article }) => ({
         url: `/articles/${slug}`,
         method: 'PUT',
-        body: articleData,
+        body: { article },
       }),
+      invalidatesTags: (result, error, { slug }) => [
+        { type: 'Article', id: slug },
+      ],
     }),
     favoriteArticle: builder.mutation({
       query: slug => ({
         url: `/articles/${slug}/favorite`,
         method: 'POST',
       }),
+      invalidatesTags: [
+        'Articles',
+        (result, error, slug) => ({ type: 'Article', id: slug }),
+      ],
     }),
     unfavoriteArticle: builder.mutation({
       query: slug => ({
         url: `/articles/${slug}/favorite`,
         method: 'DELETE',
       }),
+      invalidatesTags: [
+        'Articles',
+        (result, error, slug) => ({ type: 'Article', id: slug }),
+      ],
     }),
   }),
 });

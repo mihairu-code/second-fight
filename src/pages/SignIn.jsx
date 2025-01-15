@@ -91,11 +91,9 @@ export default function SignIn() {
           message: 'Некорректный email',
         },
       })}
-
       {renderInput('password', 'Пароль', 'password', {
         required: 'Пароль обязателен',
       })}
-
       <section className="button-area">
         <Button
           className="login-button"

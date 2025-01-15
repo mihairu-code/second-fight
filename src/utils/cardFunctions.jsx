@@ -26,7 +26,7 @@ const capitalizeFirstLetter = str => {
 };
 
 const renderTags = (tags = []) => {
-  if (!Array.isArray(tags)) return null; // Защита от некорректных данных
+  if (!Array.isArray(tags)) return null;
   return (
     <ul className="tag-list">
       {tags.map(
@@ -41,25 +41,6 @@ const renderTags = (tags = []) => {
       )}
     </ul>
   );
-};
-
-const toggleFavorite = async (
-  isFavorited,
-  slug,
-  favoriteArticle,
-  unfavoriteArticle,
-  setIsFavorited,
-) => {
-  try {
-    if (isFavorited) {
-      await unfavoriteArticle(slug);
-    } else {
-      await favoriteArticle(slug);
-    }
-    setIsFavorited(!isFavorited);
-  } catch (error) {
-    console.error('Ошибка лайка:', error);
-  }
 };
 
 const setArticleFormValues = (data, setValue, setTags) => {
@@ -116,6 +97,7 @@ const submitArticleUpdate = async (
   tags,
   updateArticle,
   navigate,
+  refetch,
 ) => {
   const { title, description, text } = data;
 
@@ -134,7 +116,8 @@ const submitArticleUpdate = async (
   try {
     const response = await updateArticle(articleData).unwrap();
     console.log('Ответ от API:', response);
-    navigate(`/articles/${slug}`, { replace: true });
+    navigate(`/articles/${response.article.slug}`, { replace: true });
+    await refetch();
   } catch (error) {
     console.error('Ошибка обновления статьи:', error);
   }
@@ -145,7 +128,6 @@ export {
   randomColorTags,
   capitalizeFirstLetter,
   renderTags,
-  toggleFavorite,
   removeTag,
   setArticleFormValues,
   handleTagUpdate,

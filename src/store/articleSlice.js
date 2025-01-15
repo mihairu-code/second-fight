@@ -2,11 +2,11 @@ import { createSlice } from '@reduxjs/toolkit';
 import { ConduitAPI } from '@services/ConduitAPI';
 
 const initialState = {
+  openArticleSlug: null,
   articles: [],
   currentArticle: null,
   slug: null,
   articleForm: {
-    // Добавлено состояние формы
     title: '',
     description: '',
     body: '',
@@ -37,11 +37,9 @@ const articleSlice = createSlice({
       state.currentArticle = action.payload;
     },
     setArticleForm(state, action) {
-      // Экшен для обновления формы
       state.articleForm = { ...state.articleForm, ...action.payload };
     },
     resetArticleForm(state) {
-      // Экшен для очистки формы
       state.articleForm = initialState.articleForm;
     },
   },

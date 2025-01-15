@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
-import { useLocation } from 'react-router';
+import { useParams } from 'react-router';
 import ReactMarkdown from 'react-markdown';
-import { Text, User } from '@gravity-ui/uikit';
+import { Card, Skeleton, Text, User } from '@gravity-ui/uikit';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCurrentArticle } from '@store/articleSlice';
 import { useGetArticleBySlugQuery } from '@services/ConduitAPI';
@@ -15,14 +15,14 @@ import ArticleHeader from '@components/ArticleHeader';
 import ExtraButtons from '@components/ExtraButtons';
 
 const OpenedArticle = () => {
-  const { state } = useLocation();
-  const { slug } = state.data;
+  const { slug } = useParams();
   const dispatch = useDispatch();
+  const { data, error, isLoading, refetch } = useGetArticleBySlugQuery(slug);
 
-  // Запрос статьи по slug
-  const { data, error, isLoading } = useGetArticleBySlugQuery(slug);
+  useEffect(() => {
+    refetch();
+  }, [slug, refetch]);
 
-  // Сохраняем статью в Redux
   useEffect(() => {
     if (data) {
       dispatch(setCurrentArticle(data.article));
@@ -33,15 +33,19 @@ const OpenedArticle = () => {
   const currentUser = useSelector(state => state.auth?.user?.username);
 
   if (isLoading) {
-    return <div>Загрузка статьи...</div>;
+    return <Skeleton size="xl" className="loadingSpin" />;
   }
 
   if (error) {
-    return <div>Ошибка загрузки: {error.message || 'Неизвестная ошибка'}</div>;
+    return (
+      <Card theme="danger" className="card__message">
+        Ошибка загрузки: {error.message || 'Неизвестная ошибка'}
+      </Card>
+    );
   }
 
   if (!currentArticle) {
-    return <div>Статья не найдена.</div>;
+    return <Card theme="info">Статья не найдена.</Card>;
   }
 
   const {
@@ -57,7 +61,12 @@ const OpenedArticle = () => {
 
   return (
     <article className="article-card article_opened">
-      <ArticleHeader slug={slug} title={title} favorited={favorited} />
+      <ArticleHeader
+        slug={slug}
+        title={title}
+        favorited={favorited}
+        refetch={refetch}
+      />
       {renderTags(tagList)}
       <Text
         className="card-text"

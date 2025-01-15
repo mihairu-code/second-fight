@@ -22,7 +22,7 @@ export default function EditArticle() {
   const { slug } = useParams();
   const navigate = useNavigate();
 
-  const { data, error, isLoading } = useGetArticleBySlugQuery(slug);
+  const { data, error, isLoading, refetch } = useGetArticleBySlugQuery(slug);
   const [
     updateArticle,
     { isLoading: isUpdating, isError, error: updateError },
@@ -52,11 +52,17 @@ export default function EditArticle() {
     <form
       className="create-article"
       onSubmit={handleSubmit(formData =>
-        submitArticleUpdate(formData, slug, tags, updateArticle, navigate),
+        submitArticleUpdate(
+          formData,
+          slug,
+          tags,
+          updateArticle,
+          navigate,
+          refetch,
+        ),
       )}
     >
       <h1>Редактировать статью</h1>
-
       <Controller
         name="title"
         control={control}
@@ -72,7 +78,6 @@ export default function EditArticle() {
           />
         )}
       />
-
       <Controller
         name="description"
         control={control}
@@ -88,7 +93,6 @@ export default function EditArticle() {
           />
         )}
       />
-
       <Controller
         name="text"
         control={control}
@@ -105,7 +109,6 @@ export default function EditArticle() {
           />
         )}
       />
-
       <section className="tags-section">
         <Controller
           name="tag"
@@ -153,7 +156,6 @@ export default function EditArticle() {
           ))}
         </div>
       </section>
-
       <Button type="submit" size="l" view="action" disabled={isUpdating}>
         {isUpdating ? 'Обновление...' : 'Обновить статью'}
       </Button>

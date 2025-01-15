@@ -114,7 +114,6 @@ export default function SignUp() {
         required: 'Повтор пароля обязателен',
         validate: value => value === password || 'Пароли должны совпадать',
       })}
-
       <Controller
         name="consent"
         control={control}
@@ -133,7 +132,6 @@ export default function SignUp() {
           </Checkbox>
         )}
       />
-
       <section className="button-area">
         <Button
           className="create-button"

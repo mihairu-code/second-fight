@@ -8,6 +8,8 @@ import {
 } from '@utils/cardFunctions';
 import '@styles/ArticleCard.less';
 import ArticleHeader from '@components/ArticleHeader';
+import baseAvatar from '@assets/base_avatar.jpg';
+import { useGetArticlesQuery } from '@services/ConduitAPI.js';
 
 const ArticleCard = ({ data = {}, currentPage }) => {
   const {
@@ -21,6 +23,8 @@ const ArticleCard = ({ data = {}, currentPage }) => {
     favorited,
   } = data;
   const { username, image } = author;
+  const { refetch } = useGetArticlesQuery({ limit: 5, offset: 0 });
+  const avatarUrl = image?.startsWith('https') ? image : baseAvatar;
 
   return (
     <li key={slug}>
@@ -29,7 +33,12 @@ const ArticleCard = ({ data = {}, currentPage }) => {
         state={{ data, fromPage: currentPage }}
         className="article-card"
       >
-        <ArticleHeader favorited={favorited} slug={slug} title={title} />
+        <ArticleHeader
+          favorited={favorited}
+          slug={slug}
+          title={title}
+          refetch={refetch}
+        />
         {renderTags(tagList)}
         <Text
           className="card-text"
@@ -41,7 +50,7 @@ const ArticleCard = ({ data = {}, currentPage }) => {
         </Text>
         <User
           className="card-user"
-          avatar={{ imgUrl: image, loading: 'eager' }}
+          avatar={{ imgUrl: avatarUrl, loading: 'eager' }}
           name={username}
           description={formatDate(updatedAt || createdAt)}
           size="l"

@@ -1,29 +1,28 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   useFavoriteArticleMutation,
   useUnfavoriteArticleMutation,
 } from '@services/ConduitAPI.js';
-import {
-  capitalizeFirstLetter,
-  toggleFavorite,
-} from '@utils/cardFunctions.jsx';
+import { capitalizeFirstLetter } from '@utils/cardFunctions.jsx';
 import { HeartFill } from '@gravity-ui/icons';
 import '@styles/ArticleCard.less';
 
-const ArticleHeader = ({ slug, favorited, title }) => {
-  const [isFavorited, setIsFavorited] = useState(favorited);
+const ArticleHeader = ({ slug, favorited, title, refetch }) => {
   const [favoriteArticle] = useFavoriteArticleMutation();
   const [unfavoriteArticle] = useUnfavoriteArticleMutation();
 
   const handleToggleLike = async e => {
     e.preventDefault();
-    await toggleFavorite(
-      isFavorited,
-      slug,
-      favoriteArticle,
-      unfavoriteArticle,
-      setIsFavorited,
-    );
+    try {
+      if (favorited) {
+        await unfavoriteArticle(slug);
+      } else {
+        await favoriteArticle(slug);
+      }
+      refetch();
+    } catch (error) {
+      console.error('Ошибка лайка:', error);
+    }
   };
 
   return (
@@ -31,7 +30,7 @@ const ArticleHeader = ({ slug, favorited, title }) => {
       <h5 className="article-title">{capitalizeFirstLetter(title)}</h5>
       <HeartFill
         onClick={handleToggleLike}
-        className={`like ${isFavorited ? 'liked' : ''}`}
+        className={`like ${favorited ? 'liked' : ''}`}
         stroke="red"
         fill="none"
       />

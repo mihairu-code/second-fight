@@ -12,7 +12,7 @@ import '@styles/Sign.less';
 export default function CreateArticle() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [createArticle, { isLoading }] = useCreateArticleMutation();
+  const [createArticle, { isLoading }, refetch] = useCreateArticleMutation();
 
   const { title, description, body, tagList, editTagIndex } = useSelector(
     state => state.article.articleForm,
@@ -48,6 +48,7 @@ export default function CreateArticle() {
       console.log('Статья успешно создана');
       dispatch(resetArticleForm());
       navigate('/articles');
+      await refetch();
     } catch (error) {
       console.error('Ошибка создания статьи:', error);
     }
@@ -56,8 +57,6 @@ export default function CreateArticle() {
   return (
     <form className="create-article" onSubmit={handleSubmit(onSubmit)}>
       <h1>Создать статью</h1>
-
-      {/* Заголовок */}
       <Controller
         name="title"
         control={control}
@@ -75,8 +74,6 @@ export default function CreateArticle() {
           />
         )}
       />
-
-      {/* Краткое описание */}
       <Controller
         name="description"
         control={control}
@@ -94,8 +91,6 @@ export default function CreateArticle() {
           />
         )}
       />
-
-      {/* Текст статьи */}
       <Controller
         name="text"
         control={control}
@@ -114,8 +109,6 @@ export default function CreateArticle() {
           />
         )}
       />
-
-      {/* Теги */}
       <section className="tags-section">
         <Controller
           name="tag"
@@ -147,8 +140,6 @@ export default function CreateArticle() {
         >
           <Icon size={20} data={editTagIndex !== null ? Pencil : SquarePlus} />
         </Button>
-
-        {/* Отображение тегов */}
         <div className="tags-list">
           {Array.isArray(tagList) && tagList.length > 0 ? (
             tagList.map((tag, index) => (
@@ -178,8 +169,6 @@ export default function CreateArticle() {
           )}
         </div>
       </section>
-
-      {/* Кнопка отправки */}
       <Button type="submit" size="l" view="action" disabled={isLoading}>
         {isLoading ? 'Создание...' : 'Создать статью'}
       </Button>

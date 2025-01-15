@@ -21,7 +21,6 @@ export default function EditProfile() {
     mode: 'onChange',
   });
 
-  // Заполнение формы текущими данными пользователя
   useEffect(() => {
     if (user) {
       reset({
@@ -35,7 +34,6 @@ export default function EditProfile() {
 
   const onSubmit = async data => {
     try {
-      // Подготовка данных для отправки (если пароль пустой, не отправляем его)
       const payload = {
         username: data.username,
         email: data.email,
@@ -69,8 +67,6 @@ export default function EditProfile() {
   return (
     <form className="edit-profile" onSubmit={handleSubmit(onSubmit)}>
       <h1>Редактировать профиль</h1>
-
-      {/* Username */}
       <Controller
         name="username"
         control={control}
@@ -88,8 +84,6 @@ export default function EditProfile() {
           />
         )}
       />
-
-      {/* Email */}
       <Controller
         name="email"
         control={control}
@@ -112,8 +106,6 @@ export default function EditProfile() {
           />
         )}
       />
-
-      {/* New Password */}
       <Controller
         name="newPassword"
         control={control}
@@ -139,8 +131,6 @@ export default function EditProfile() {
           />
         )}
       />
-
-      {/* Avatar URL */}
       <Controller
         name="avatar"
         control={control}
@@ -162,8 +152,6 @@ export default function EditProfile() {
           />
         )}
       />
-
-      {/* Submit */}
       <section className="button-area">
         <Button
           className="update-button"

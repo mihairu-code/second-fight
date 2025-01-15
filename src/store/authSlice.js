@@ -35,7 +35,7 @@ const authSlice = createSlice({
       state.token = null;
       state.user = null;
       // eslint-disable-next-line no-undef
-      localStorage.removeItem('auth'); // Удаляем из localStorage при logout
+      localStorage.removeItem('auth');
     },
   },
 });
