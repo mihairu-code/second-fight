@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router';
 import ReactMarkdown from 'react-markdown';
-import { Card, Skeleton, Text, User } from '@gravity-ui/uikit';
+import { Card, Spin, Text, User } from '@gravity-ui/uikit';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCurrentArticle } from '@store/articleSlice';
 import { useGetArticleBySlugQuery } from '@services/ConduitAPI';
@@ -33,7 +33,7 @@ const OpenedArticle = () => {
   const currentUser = useSelector(state => state.auth?.user?.username);
 
   if (isLoading) {
-    return <Skeleton size="xl" className="loadingSpin" />;
+    return <Spin size="xl" className="loadingSpin" />;
   }
 
   if (error) {
