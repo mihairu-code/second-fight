@@ -77,7 +77,11 @@ export default function Header() {
   return (
     <>
       <header className="header">
-        <Link className="header__title_link" onClick={handleLogoClick}>
+        <Link
+          className="header__title_link"
+          to="/articles"
+          onDoubleClick={handleLogoClick}
+        >
           <h1 className="header__title">Realworld Blog</h1>
         </Link>
         {user ? userLinks : guestLinks}
