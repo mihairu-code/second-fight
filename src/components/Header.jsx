@@ -1,19 +1,23 @@
 import React, { useCallback, useMemo } from 'react';
 import { Button, UserLabel } from '@gravity-ui/uikit';
-import { Link, Outlet } from 'react-router'; // Исправлен импорт
+import { Link, Outlet, useNavigate } from 'react-router';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { clearAuth } from '@store/authSlice.js';
+import { setArticles } from '@store/articleSlice.js';
 import '../styles/Header.less';
 
 export default function Header() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const user = useSelector(state => state.auth.user, shallowEqual);
 
   const logout = useCallback(() => {
     dispatch(clearAuth());
     // eslint-disable-next-line no-undef
     localStorage.removeItem('auth');
-  }, [dispatch]);
+    dispatch(setArticles({ articles: [], total: 0 }));
+    navigate('/articles');
+  }, [dispatch, navigate]);
 
   const guestLinks = useMemo(
     () => (

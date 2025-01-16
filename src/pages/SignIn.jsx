@@ -6,6 +6,7 @@ import { toaster } from '@gravity-ui/uikit/toaster-singleton-react-18';
 import { useLoginMutation } from '@services/ConduitAPI';
 import { useDispatch } from 'react-redux';
 import { setAuth } from '@store/authSlice.js';
+import { resetArticles } from '@store/articleSlice.js';
 import '@styles/Sign.less';
 
 export default function SignIn() {
@@ -35,7 +36,10 @@ export default function SignIn() {
         'auth',
         JSON.stringify({ token: response.user.token, user: response.user }),
       );
+
       dispatch(setAuth({ token: response.user.token, user: response.user }));
+
+      dispatch(resetArticles());
 
       showToast(
         'login-success',
@@ -43,7 +47,8 @@ export default function SignIn() {
         'Вы успешно вошли!',
         'success',
       );
-      navigate('/');
+
+      navigate('/articles');
     } catch (error) {
       const errorMessage = error?.data?.errors
         ? Object.entries(error.data.errors)

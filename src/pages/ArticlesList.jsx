@@ -1,10 +1,9 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Pagination, Skeleton } from '@gravity-ui/uikit';
 import ArticleCard from '@components/ArticleCard';
 import { useGetArticlesQuery } from '@services/ConduitAPI';
-import { setPage } from '@store/articleSlice.js';
-
+import { resetArticles, setPage } from '@store/articleSlice.js';
 import '@styles/ArticlesList.less';
 
 export default function ArticlesList() {
@@ -26,6 +25,9 @@ export default function ArticlesList() {
     },
     [dispatch],
   );
+  useEffect(() => {
+    dispatch(resetArticles());
+  }, [dispatch]);
 
   if (isLoading) {
     return (

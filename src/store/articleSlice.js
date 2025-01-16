@@ -39,8 +39,9 @@ const articleSlice = createSlice({
     setArticleForm(state, action) {
       state.articleForm = { ...state.articleForm, ...action.payload };
     },
-    resetArticleForm(state) {
-      state.articleForm = initialState.articleForm;
+    resetArticles(state) {
+      state.articles = [];
+      state.total = 0;
     },
   },
   extraReducers: builder => {
@@ -61,6 +62,7 @@ export const {
   setCurrentArticle,
   setArticleForm,
   resetArticleForm,
+  resetArticles,
 } = articleSlice.actions;
 
 export default articleSlice.reducer;
