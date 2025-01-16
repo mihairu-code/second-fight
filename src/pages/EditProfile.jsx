@@ -26,7 +26,7 @@ export default function EditProfile() {
       reset({
         username: user.username,
         email: user.email,
-        avatar: user.avatar || '',
+        image: user.image || '',
         newPassword: '',
       });
     }
@@ -37,7 +37,7 @@ export default function EditProfile() {
       const payload = {
         username: data.username,
         email: data.email,
-        avatar: data.avatar || null,
+        image: data.image || null,
         ...(data.newPassword && { password: data.newPassword }),
       };
 
@@ -64,11 +64,17 @@ export default function EditProfile() {
     }
   };
 
-  const renderInput = (name, placeholder, type = 'text', validation = {}) => (
+  const renderInput = (
+    name,
+    placeholder,
+    type = 'text',
+    validation = {},
+    defaultValue = '',
+  ) => (
     <Controller
       name={name}
       control={control}
-      defaultValue=""
+      defaultValue={defaultValue}
       rules={validation}
       render={({ field }) => {
         const hasError = !!errors[name] && field.value !== '';
@@ -90,16 +96,30 @@ export default function EditProfile() {
     <form className="edit-profile" onSubmit={handleSubmit(onSubmit)}>
       <h1>Редактировать профиль</h1>
 
-      {renderInput('username', 'Имя пользователя', 'text', {
-        required: 'Имя пользователя обязательно',
-      })}
-      {renderInput('email', 'Email', 'email', {
-        required: 'Email обязателен',
-        pattern: {
-          value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-          message: 'Некорректный email',
+      {renderInput(
+        'username',
+        'Имя пользователя',
+        'text',
+        {
+          required: 'Имя пользователя обязательно',
         },
-      })}
+        user?.username || '',
+      )}
+
+      {renderInput(
+        'email',
+        'Email',
+        'email',
+        {
+          required: 'Email обязателен',
+          pattern: {
+            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+            message: 'Некорректный email',
+          },
+        },
+        user?.email || '',
+      )}
+
       {renderInput('newPassword', 'Новый пароль', 'password', {
         minLength: {
           value: 6,
@@ -110,13 +130,20 @@ export default function EditProfile() {
           message: 'Пароль должен быть не более 40 символов',
         },
       })}
-      {renderInput('avatar', 'URL аватара', 'text', {
-        pattern: {
-          value:
-            /^(https?:\/\/)?([\w-]+(\.[\w-]+)+)(:[0-9]{1,5})?(\/[\w\-._~:/?#[\]@!$&'()*+,;=]*)?$/,
-          message: 'Некорректный URL изображения',
+
+      {renderInput(
+        'avatar',
+        'URL аватара',
+        'text',
+        {
+          pattern: {
+            value:
+              /^(https?:\/\/)?([\w-]+(\.[\w-]+)+)(:[0-9]{1,5})?(\/[\w\-._~:/?#[\]@!$&'()*+,;=]*)?$/,
+            message: 'Некорректный URL изображения',
+          },
         },
-      })}
+        user?.image || '',
+      )}
 
       <section className="button-area">
         <Button
