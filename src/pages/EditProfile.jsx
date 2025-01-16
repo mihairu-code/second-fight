@@ -64,94 +64,60 @@ export default function EditProfile() {
     }
   };
 
+  const renderInput = (name, placeholder, type = 'text', validation = {}) => (
+    <Controller
+      name={name}
+      control={control}
+      defaultValue=""
+      rules={validation}
+      render={({ field }) => {
+        const hasError = !!errors[name] && field.value !== '';
+        return (
+          <TextInput
+            {...field}
+            placeholder={hasError ? undefined : placeholder}
+            note={!hasError && field.value ? placeholder : undefined}
+            type={type}
+            error={hasError}
+            errorMessage={hasError ? errors[name]?.message : ''}
+          />
+        );
+      }}
+    />
+  );
+
   return (
     <form className="edit-profile" onSubmit={handleSubmit(onSubmit)}>
       <h1>Редактировать профиль</h1>
-      <Controller
-        name="username"
-        control={control}
-        defaultValue=""
-        rules={{
-          required: 'Имя пользователя обязательно',
-        }}
-        render={({ field }) => (
-          <TextInput
-            {...field}
-            placeholder="Имя пользователя"
-            note={field.value ? 'Имя пользователя' : undefined}
-            error={!!errors.username}
-            errorMessage={errors.username?.message || ''}
-          />
-        )}
-      />
-      <Controller
-        name="email"
-        control={control}
-        defaultValue=""
-        rules={{
-          required: 'Email обязателен',
-          pattern: {
-            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-            message: 'Некорректный email',
-          },
-        }}
-        render={({ field }) => (
-          <TextInput
-            {...field}
-            placeholder="Email"
-            note={field.value ? 'Email' : undefined}
-            type="email"
-            error={!!errors.email}
-            errorMessage={errors.email?.message || ''}
-          />
-        )}
-      />
-      <Controller
-        name="newPassword"
-        control={control}
-        defaultValue=""
-        rules={{
-          minLength: {
-            value: 6,
-            message: 'Пароль должен быть не менее 6 символов',
-          },
-          maxLength: {
-            value: 40,
-            message: 'Пароль должен быть не более 40 символов',
-          },
-        }}
-        render={({ field }) => (
-          <TextInput
-            {...field}
-            placeholder="Новый пароль"
-            note={field.value ? 'Новый пароль' : undefined}
-            type="password"
-            error={!!errors.newPassword}
-            errorMessage={errors.newPassword?.message || ''}
-          />
-        )}
-      />
-      <Controller
-        name="avatar"
-        control={control}
-        defaultValue=""
-        rules={{
-          pattern: {
-            value:
-              /^(https?:\/\/)?([\w-]+(\.[\w-]+)+)(:[0-9]{1,5})?(\/[\w\-._~:/?#[\]@!$&'()*+,;=]*)?$/,
-            message: 'Некорректный URL изображения',
-          },
-        }}
-        render={({ field }) => (
-          <TextInput
-            {...field}
-            placeholder="URL аватара"
-            note={field.value ? 'URL аватара' : undefined}
-            error={!!errors.avatar}
-            errorMessage={errors.avatar?.message || ''}
-          />
-        )}
-      />
+
+      {renderInput('username', 'Имя пользователя', 'text', {
+        required: 'Имя пользователя обязательно',
+      })}
+      {renderInput('email', 'Email', 'email', {
+        required: 'Email обязателен',
+        pattern: {
+          value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+          message: 'Некорректный email',
+        },
+      })}
+      {renderInput('newPassword', 'Новый пароль', 'password', {
+        minLength: {
+          value: 6,
+          message: 'Пароль должен быть не менее 6 символов',
+        },
+        maxLength: {
+          value: 40,
+          message: 'Пароль должен быть не более 40 символов',
+        },
+      })}
+      {renderInput('avatar', 'URL аватара', 'text', {
+        pattern: {
+          value:
+            /^(https?:\/\/)?([\w-]+(\.[\w-]+)+)(:[0-9]{1,5})?(\/[\w\-._~:/?#[\]@!$&'()*+,;=]*)?$/,
+          message: 'Некорректный URL изображения',
+        },
+      })}
+
       <section className="button-area">
         <Button
           className="update-button"
