@@ -3,13 +3,18 @@ import { Button, UserLabel } from '@gravity-ui/uikit';
 import { Link, Outlet, useNavigate } from 'react-router';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { clearAuth } from '@store/authSlice.js';
-import { setArticles } from '@store/articleSlice.js';
+import { setArticles, setPage } from '@store/articleSlice.js';
 import '../styles/Header.less';
 
 export default function Header() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector(state => state.auth.user, shallowEqual);
+
+  const handleLogoClick = useCallback(() => {
+    dispatch(setPage(1)); // Устанавливаем первую страницу
+    navigate('/articles');
+  }, [dispatch, navigate]);
 
   const logout = useCallback(() => {
     dispatch(clearAuth());
@@ -72,7 +77,7 @@ export default function Header() {
   return (
     <>
       <header className="header">
-        <Link className="header__title_link" to="/articles">
+        <Link className="header__title_link" onClick={handleLogoClick}>
           <h1 className="header__title">Realworld Blog</h1>
         </Link>
         {user ? userLinks : guestLinks}

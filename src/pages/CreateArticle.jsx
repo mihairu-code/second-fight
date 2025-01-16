@@ -12,7 +12,7 @@ import '@styles/Sign.less';
 export default function CreateArticle() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [createArticle, { isLoading }, refetch] = useCreateArticleMutation();
+  const [createArticle, { isLoading }] = useCreateArticleMutation();
 
   const { title, description, body, tagList, editTagIndex } = useSelector(
     state => state.article.articleForm,
