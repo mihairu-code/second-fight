@@ -1,3 +1,3 @@
 № Блог-платформа
 
-[Versel](second-fight.vercel.app)
+[Versel]second-fight.vercel.app
