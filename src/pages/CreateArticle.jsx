@@ -4,7 +4,7 @@ import { Button, Icon, Label, TextArea, TextInput } from '@gravity-ui/uikit';
 import { Pencil, SquarePlus } from '@gravity-ui/icons';
 import { useCreateArticleMutation } from '@services/ConduitAPI';
 import { useDispatch, useSelector } from 'react-redux';
-import { resetArticleForm, setArticleForm } from '@store/articleSlice';
+import { resetArticles, setArticleForm } from '@store/articleSlice';
 import { useNavigate } from 'react-router';
 import { editTag, handleTagUpdate, removeTag } from '@utils/cardFunctions';
 import '@styles/Sign.less';
@@ -46,9 +46,8 @@ export default function CreateArticle() {
         tagList,
       }).unwrap();
       console.log('Статья успешно создана');
-      dispatch(resetArticleForm());
+      dispatch(resetArticles());
       navigate('/articles');
-      await refetch();
     } catch (error) {
       console.error('Ошибка создания статьи:', error);
     }

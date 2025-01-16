@@ -23,7 +23,10 @@ const ArticleCard = ({ data = {}, currentPage }) => {
     favorited,
     favoritesCount,
   } = data;
-  const { username, image } = author;
+  const {
+    username,
+    image = 'https://99px.ru/sstorage/1/2016/08/image_11308161654431723981.jpg',
+  } = author;
   const { refetch } = useGetArticlesQuery({ limit: 5, offset: 0 });
   const avatarUrl = image?.startsWith('https') ? image : baseAvatar;
 
