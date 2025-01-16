@@ -7,7 +7,7 @@ import { capitalizeFirstLetter } from '@utils/cardFunctions.jsx';
 import { HeartFill } from '@gravity-ui/icons';
 import '@styles/ArticleCard.less';
 
-const ArticleHeader = ({ slug, favorited, title, refetch }) => {
+const ArticleHeader = ({ slug, favorited, favoritesCount, title, refetch }) => {
   const [favoriteArticle] = useFavoriteArticleMutation();
   const [unfavoriteArticle] = useUnfavoriteArticleMutation();
 
@@ -28,12 +28,14 @@ const ArticleHeader = ({ slug, favorited, title, refetch }) => {
   return (
     <section className="section-title">
       <h5 className="article-title">{capitalizeFirstLetter(title)}</h5>
-      <HeartFill
-        onClick={handleToggleLike}
-        className={`like ${favorited ? 'liked' : ''}`}
-        stroke="red"
-        fill="none"
-      />
+      <div className="like-container" onClick={handleToggleLike}>
+        <HeartFill
+          className={`like ${favorited ? 'liked' : ''}`}
+          stroke="red"
+          fill="none"
+        />
+        <span className="favorites-count">{favoritesCount}</span>
+      </div>
     </section>
   );
 };

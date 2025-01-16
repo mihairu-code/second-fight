@@ -21,6 +21,7 @@ const ArticleCard = ({ data = {}, currentPage }) => {
     tagList,
     author = {},
     favorited,
+    favoritesCount,
   } = data;
   const { username, image } = author;
   const { refetch } = useGetArticlesQuery({ limit: 5, offset: 0 });
@@ -35,6 +36,7 @@ const ArticleCard = ({ data = {}, currentPage }) => {
       >
         <ArticleHeader
           favorited={favorited}
+          favoritesCount={favoritesCount}
           slug={slug}
           title={title}
           refetch={refetch}

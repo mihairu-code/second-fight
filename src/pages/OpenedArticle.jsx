@@ -56,6 +56,7 @@ const OpenedArticle = () => {
     tagList,
     author = {},
     favorited,
+    favoritesCount,
   } = currentArticle;
   const { username, image } = author;
 
@@ -65,6 +66,7 @@ const OpenedArticle = () => {
         slug={slug}
         title={title}
         favorited={favorited}
+        favoritesCount={favoritesCount}
         refetch={refetch}
       />
       {renderTags(tagList)}
