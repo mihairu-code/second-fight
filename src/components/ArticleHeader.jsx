@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
   useFavoriteArticleMutation,
   useUnfavoriteArticleMutation,
@@ -6,13 +6,38 @@ import {
 import { capitalizeFirstLetter } from '@utils/cardFunctions.jsx';
 import { HeartFill } from '@gravity-ui/icons';
 import '@styles/ArticleCard.less';
+import { toaster } from '@gravity-ui/uikit/toaster-singleton-react-18';
 
 const ArticleHeader = ({ slug, favorited, favoritesCount, title, refetch }) => {
   const [favoriteArticle] = useFavoriteArticleMutation();
   const [unfavoriteArticle] = useUnfavoriteArticleMutation();
+  // eslint-disable-next-line no-undef
+  const token = localStorage.getItem('token');
+
+  const showToast = useCallback((name, title, content, theme = 'info') => {
+    toaster.add({
+      name,
+      title,
+      content,
+      theme,
+      autoHiding: 5000,
+    });
+  }, []);
 
   const handleToggleLike = async e => {
     e.preventDefault();
+
+    if (!token) {
+      showToast(
+        'consent-error',
+        'Оповещение',
+        'Необходимо авторизоваться',
+        'info',
+        'Зарегистрироваться', // Текст кнопки
+      );
+      return;
+    }
+
     try {
       if (favorited) {
         await unfavoriteArticle(slug);
@@ -21,7 +46,7 @@ const ArticleHeader = ({ slug, favorited, favoritesCount, title, refetch }) => {
       }
       refetch();
     } catch (error) {
-      console.error('Ошибка лайка:', error);
+      console.error('Ошибка при изменении лайка:', error);
     }
   };
 
