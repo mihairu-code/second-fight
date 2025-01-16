@@ -12,7 +12,7 @@ const ArticleHeader = ({ slug, favorited, favoritesCount, title, refetch }) => {
   const [favoriteArticle] = useFavoriteArticleMutation();
   const [unfavoriteArticle] = useUnfavoriteArticleMutation();
   // eslint-disable-next-line no-undef
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('auth');
 
   const showToast = useCallback((name, title, content, theme = 'info') => {
     toaster.add({
