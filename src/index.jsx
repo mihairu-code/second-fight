@@ -1,4 +1,4 @@
-import React, { StrictMode } from 'react';
+import React from 'react';
 import { ThemeProvider } from '@gravity-ui/uikit';
 import { Provider } from 'react-redux';
 import { createRoot } from 'react-dom/client';
@@ -16,7 +16,7 @@ const root = createRoot(rootElement);
 
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename="/">
       <Provider store={store}>
         <ThemeProvider theme={'light'}>
           <App />
