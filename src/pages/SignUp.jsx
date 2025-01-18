@@ -74,7 +74,7 @@ export default function SignUp() {
           <TextInput
             {...field}
             placeholder={placeholder}
-            note={!hasError && field.value ? placeholder : undefined} // Показываем note только если нет ошибки
+            note={field.value ? placeholder : undefined}
             type={type}
             error={hasError}
             errorMessage={hasError ? errors[name]?.message : ''}

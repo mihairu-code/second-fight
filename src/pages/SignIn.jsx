@@ -75,7 +75,7 @@ export default function SignIn() {
           <TextInput
             {...field}
             placeholder={placeholder}
-            note={!hasError && field.value ? placeholder : undefined}
+            note={field.value ? placeholder : undefined}
             type={type}
             error={hasError}
             errorMessage={hasError ? errors[name]?.message : ''}
