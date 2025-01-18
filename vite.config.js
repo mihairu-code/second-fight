@@ -37,6 +37,16 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: path.resolve(__dirname, './index.html'), // Путь к index.html в корне проекта
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('react')) {
+              return 'vendor-react';
+            }
+            return 'vendor';
+          }
+        },
+      },
     },
   },
 });
