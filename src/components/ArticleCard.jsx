@@ -23,12 +23,16 @@ const ArticleCard = ({ data = {}, currentPage }) => {
     favorited,
     favoritesCount,
   } = data;
-  const {
-    username,
-    image = 'https://99px.ru/sstorage/1/2016/08/image_11308161654431723981.jpg',
-  } = author;
+  let { username, image } = author;
   const { refetch } = useGetArticlesQuery({ limit: 5, offset: 0 });
-  const avatarUrl = image?.startsWith('https') ? image : baseAvatar;
+  image =
+    !image ||
+    !image?.startsWith('http') ||
+    image?.startsWith(
+      'https://static.productionready.io/images/smiley-cyrus.jpg',
+    )
+      ? baseAvatar
+      : image;
 
   return (
     <li key={slug}>
@@ -55,7 +59,7 @@ const ArticleCard = ({ data = {}, currentPage }) => {
         </Text>
         <User
           className="card-user"
-          avatar={{ imgUrl: avatarUrl, loading: 'eager' }}
+          avatar={{ imgUrl: image, loading: 'eager' }}
           name={username}
           description={formatDate(updatedAt || createdAt)}
           size="l"
