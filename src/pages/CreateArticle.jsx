@@ -39,15 +39,16 @@ export default function CreateArticle() {
     const { title, description, text } = data;
 
     try {
-      await createArticle({
+      const response = await createArticle({
         title,
         description,
         body: text,
         tagList,
       }).unwrap();
-      console.log('Статья успешно создана');
+      console.log('Статья успешно создана:', response);
+      const slug = response.article.slug;
       dispatch(resetArticles());
-      navigate('/articles');
+      navigate(`/articles/${slug}`);
     } catch (error) {
       console.error('Ошибка создания статьи:', error);
     }
