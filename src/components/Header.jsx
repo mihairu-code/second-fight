@@ -4,6 +4,7 @@ import { Link, Outlet, useNavigate } from 'react-router';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { clearAuth } from '@store/authSlice.js';
 import { setArticles, setPage } from '@store/articleSlice.js';
+import baseAvatar from '@assets/base_avatar.jpg';
 import '../styles/Header.less';
 
 export default function Header() {
@@ -56,7 +57,7 @@ export default function Header() {
             type="person"
             size="xl"
             view="clear"
-            avatar={user?.image || 'https://via.placeholder.com/150'}
+            avatar={user?.image || baseAvatar}
           >
             {user?.username || 'Anonymous'}
           </UserLabel>
