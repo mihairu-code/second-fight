@@ -15,11 +15,13 @@ const rootElement = document.getElementById('root');
 const root = createRoot(rootElement);
 
 root.render(
-  <BrowserRouter>
-    <Provider store={store}>
-      <ThemeProvider theme={'light'}>
-        <App />
-      </ThemeProvider>
-    </Provider>
-  </BrowserRouter>,
+  <React.StrictMode>
+    <BrowserRouter basename="/">
+      <Provider store={store}>
+        <ThemeProvider theme={'light'}>
+          <App />
+        </ThemeProvider>
+      </Provider>
+    </BrowserRouter>
+  </React.StrictMode>,
 );

@@ -13,6 +13,7 @@ import {
 import '@styles/OpenedArticle.less';
 import ArticleHeader from '@components/ArticleHeader';
 import ExtraButtons from '@components/ExtraButtons';
+import baseAvatar from '@assets/base_avatar.jpg';
 
 const OpenedArticle = () => {
   const { slug } = useParams();
@@ -58,7 +59,15 @@ const OpenedArticle = () => {
     favorited,
     favoritesCount,
   } = currentArticle;
-  const { username, image } = author;
+  let { username, image } = author;
+  image =
+    !image ||
+    !image?.startsWith('http') ||
+    image?.startsWith(
+      'https://static.productionready.io/images/smiley-cyrus.jpg',
+    )
+      ? baseAvatar
+      : image;
 
   return (
     <article className="article-card article_opened">

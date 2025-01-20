@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
-    "prepare": "husky install",
+    "postinstall": "husky",
     "preview": "vite preview"
   },
   "dependencies": {
