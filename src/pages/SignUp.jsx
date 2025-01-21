@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Button, Checkbox, TextInput } from '@gravity-ui/uikit';
 import { toaster } from '@gravity-ui/uikit/toaster-singleton-react-18';
@@ -9,6 +9,7 @@ import '@styles/Sign.less';
 export default function SignUp() {
   const navigate = useNavigate();
   const [registerUser, { isLoading }] = useRegisterUserMutation();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     control,
@@ -25,6 +26,9 @@ export default function SignUp() {
   }, []);
 
   const onSubmit = async data => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+
     if (!consent) {
       showToast(
         'consent-error',
@@ -59,6 +63,8 @@ export default function SignUp() {
         : 'Неизвестная ошибка';
 
       showToast('registration-error', 'Ошибка регистрации', errorMessage);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 

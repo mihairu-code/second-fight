@@ -37,7 +37,7 @@ export default defineConfig({
   build: {
     chunkSizeWarningLimit: 1000,
     rollupOptions: {
-      input: path.resolve(__dirname, './index.html'), // Путь к index.html в корне проекта
+      input: path.resolve(__dirname, './index.html'),
     },
   },
 });
