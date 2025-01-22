@@ -36,6 +36,7 @@ export default defineConfig({
     historyApiFallback: true, // Для клиентских маршрутов
   },
   build: {
+    input: path.resolve(__dirname, './index.html'),
     outDir: path.resolve(__dirname, './dist'),
     chunkSizeWarningLimit: 1000,
   },
