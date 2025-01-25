@@ -25,10 +25,12 @@ const capitalizeFirstLetter = str => {
   return str ? str[0].toUpperCase() + str.slice(1) : 'No title';
 };
 
-const renderTags = (tags = []) => {
+const renderTags = (tags = [], componentName = 'ArticleCard') => {
   if (!Array.isArray(tags)) return null;
+  const additionalClass =
+    componentName === 'OpenedArticle' ? 'tag-list__opened' : '';
   return (
-    <ul className="tag-list">
+    <ul className={`tag-list ${additionalClass}`}>
       {tags.map(
         (tag, index) =>
           tag && (
@@ -65,13 +67,11 @@ const handleTagUpdate = (
   if (!newTag || newTag.length > 12) return;
 
   if (editIndex !== null) {
-    // Редактирование тега
     const updatedTags = [...tags];
     updatedTags[editIndex] = newTag;
     setTags(updatedTags);
     setEditIndex(null);
   } else {
-    // Добавление нового тега
     // eslint-disable-next-line no-lonely-if
     if (!tags.includes(newTag)) {
       setTags([...tags, newTag]);

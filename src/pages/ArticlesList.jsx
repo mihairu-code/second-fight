@@ -25,8 +25,11 @@ export default function ArticlesList() {
     },
     [dispatch],
   );
+
   useEffect(() => {
-    dispatch(resetArticles());
+    return () => {
+      dispatch(resetArticles());
+    };
   }, [dispatch]);
 
   if (isLoading) {

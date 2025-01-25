@@ -18,20 +18,16 @@ import baseAvatar from '@assets/base_avatar.jpg';
 const OpenedArticle = () => {
   const { slug } = useParams();
   const dispatch = useDispatch();
-  const { data, error, isLoading, refetch } = useGetArticleBySlugQuery(slug);
+  const { data, error, isLoading } = useGetArticleBySlugQuery(slug);
 
-  useEffect(() => {
-    refetch();
-  }, [slug, refetch]);
+  const currentArticle = useSelector(state => state.article.currentArticle);
+  const currentUser = useSelector(state => state.auth?.user?.username);
 
   useEffect(() => {
     if (data) {
       dispatch(setCurrentArticle(data.article));
     }
   }, [dispatch, data]);
-
-  const currentArticle = useSelector(state => state.article.currentArticle);
-  const currentUser = useSelector(state => state.auth?.user?.username);
 
   if (isLoading) {
     return <Spin size="xl" className="loadingSpin" />;
@@ -76,9 +72,8 @@ const OpenedArticle = () => {
         title={title}
         favorited={favorited}
         favoritesCount={favoritesCount}
-        refetch={refetch}
       />
-      {renderTags(tagList)}
+      {renderTags(tagList, 'OpenedArticle')}
       <Text
         className="card-text"
         whiteSpace="break-spaces"

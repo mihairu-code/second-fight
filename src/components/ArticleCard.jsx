@@ -9,7 +9,6 @@ import {
 import '@styles/ArticleCard.less';
 import ArticleHeader from '@components/ArticleHeader';
 import baseAvatar from '@assets/base_avatar.jpg';
-import { useGetArticlesQuery } from '@services/ConduitAPI.js';
 
 const ArticleCard = ({ data = {}, currentPage }) => {
   const {
@@ -24,7 +23,6 @@ const ArticleCard = ({ data = {}, currentPage }) => {
     favoritesCount,
   } = data;
   let { username, image } = author;
-  const { refetch } = useGetArticlesQuery({ limit: 5, offset: 0 });
   image =
     !image ||
     !image?.startsWith('http') ||
@@ -46,9 +44,9 @@ const ArticleCard = ({ data = {}, currentPage }) => {
           favoritesCount={favoritesCount}
           slug={slug}
           title={title}
-          refetch={refetch}
+          component={ArticleCard}
         />
-        {renderTags(tagList)}
+        {renderTags(tagList, 'ArticleCard')}
         <Text
           className="card-text"
           whiteSpace="break-spaces"

@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import {
+  ConduitAPI,
   useFavoriteArticleMutation,
   useUnfavoriteArticleMutation,
 } from '@services/ConduitAPI.js';
@@ -7,8 +8,17 @@ import { capitalizeFirstLetter } from '@utils/cardFunctions.jsx';
 import { HeartFill } from '@gravity-ui/icons';
 import '@styles/ArticleCard.less';
 import { toaster } from '@gravity-ui/uikit/toaster-singleton-react-18';
+import { useDispatch } from 'react-redux';
+import { Tooltip } from '@gravity-ui/uikit';
 
-const ArticleHeader = ({ slug, favorited, favoritesCount, title, refetch }) => {
+const ArticleHeader = ({
+  slug,
+  favorited,
+  favoritesCount,
+  title,
+  component,
+}) => {
+  const dispatch = useDispatch();
   const [favoriteArticle] = useFavoriteArticleMutation();
   const [unfavoriteArticle] = useUnfavoriteArticleMutation();
   // eslint-disable-next-line no-undef
@@ -41,10 +51,35 @@ const ArticleHeader = ({ slug, favorited, favoritesCount, title, refetch }) => {
     try {
       if (favorited) {
         await unfavoriteArticle(slug);
+        dispatch(
+          ConduitAPI.util.updateQueryData(
+            'getArticles',
+            { limit: 5, offset: 0 },
+            draft => {
+              const article = draft.articles.find(a => a.slug === slug);
+              if (article) {
+                article.favorited = false;
+                article.favoritesCount -= 1;
+              }
+            },
+          ),
+        );
       } else {
         await favoriteArticle(slug);
+        dispatch(
+          ConduitAPI.util.updateQueryData(
+            'getArticles',
+            { limit: 5, offset: 0 },
+            draft => {
+              const article = draft.articles.find(a => a.slug === slug);
+              if (article) {
+                article.favorited = true;
+                article.favoritesCount += 1;
+              }
+            },
+          ),
+        );
       }
-      refetch();
     } catch (error) {
       console.error('Ошибка при изменении лайка:', error);
     }
@@ -52,7 +87,11 @@ const ArticleHeader = ({ slug, favorited, favoritesCount, title, refetch }) => {
 
   return (
     <section className="section-title">
-      <h5 className="article-title">{capitalizeFirstLetter(title)}</h5>
+      <Tooltip content={capitalizeFirstLetter(title)} placement="top">
+        <h5 className={`article-title ${component && 'article-title__card'}`}>
+          {capitalizeFirstLetter(title)}
+        </h5>
+      </Tooltip>
       <div className="like-container" onClick={handleToggleLike}>
         <HeartFill
           className={`like ${favorited ? 'liked' : ''}`}
