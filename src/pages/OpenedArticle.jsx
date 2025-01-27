@@ -73,7 +73,7 @@ const OpenedArticle = () => {
         favorited={favorited}
         favoritesCount={favoritesCount}
       />
-      {renderTags(tagList, 'OpenedArticle')}
+      {tagList.length !== 0 && renderTags(tagList, 'OpenedArticle')}
       <Text
         className="card-text"
         whiteSpace="break-spaces"

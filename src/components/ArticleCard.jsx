@@ -46,7 +46,7 @@ const ArticleCard = ({ data = {}, currentPage }) => {
           title={title}
           component={ArticleCard}
         />
-        {renderTags(tagList, 'ArticleCard')}
+        {tagList.length !== 0 && renderTags(tagList, 'ArticleCard')}
         <Text
           className="card-text"
           whiteSpace="break-spaces"
