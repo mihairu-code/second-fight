@@ -30,7 +30,10 @@ const renderTags = (tags = [], componentName = 'ArticleCard') => {
   const additionalClass =
     componentName === 'OpenedArticle' ? 'tag-list__opened' : '';
   return (
-    <ul className={`tag-list ${additionalClass}`}>
+    <ul
+      className={`tag-list ${additionalClass}`}
+      style={tags.length && { overflow: 'unset' }}
+    >
       {tags.map(
         (tag, index) =>
           tag && (

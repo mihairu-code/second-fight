@@ -69,6 +69,7 @@ export default function CreateArticle() {
               dispatch(setArticleForm({ title: e.target.value }));
             }}
             placeholder="Заголовок"
+            note={field.value ? 'Заголовок' : undefined}
             error={!!errors.title}
             errorMessage={errors.title?.message}
           />
@@ -86,6 +87,7 @@ export default function CreateArticle() {
               dispatch(setArticleForm({ description: e.target.value }));
             }}
             placeholder="Краткое описание"
+            note={field.value ? 'Краткое описание' : undefined}
             error={!!errors.description}
             errorMessage={errors.description?.message}
           />
@@ -103,6 +105,7 @@ export default function CreateArticle() {
               dispatch(setArticleForm({ body: e.target.value }));
             }}
             placeholder="Текст статьи"
+            note={field.value ? 'Текст статьи' : undefined}
             error={!!errors.text}
             errorMessage={errors.text?.message}
             rows={10}
@@ -118,6 +121,7 @@ export default function CreateArticle() {
             <TextInput
               {...field}
               placeholder="Добавить тег"
+              note={field.value ? 'Тег' : undefined}
               error={!!errors.tag}
               errorMessage={errors.tag?.message}
             />
