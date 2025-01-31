@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, Routes } from 'react-router';
 
 import { Skeleton } from '@gravity-ui/uikit';
-import Header from '@components/Header';
+import Header from '@pages/Header.jsx';
 import ArticlesList from '@pages/ArticlesList';
 import OpenedArticle from '@pages/OpenedArticle';
 import '@styles/App.less';
@@ -46,7 +46,7 @@ export function App() {
         <Route path="sign-up" element={<SignUp />} />
         <Route path="profile" element={<EditProfile />} />
         <Route path="new-article" element={<CreateArticle />} />
-        <Route path="/articles/edit/:slug" element={<EditArticle />} />
+        <Route path="articles/edit/:slug" element={<EditArticle />} />
       </Route>
     </Routes>
   );

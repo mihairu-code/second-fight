@@ -113,12 +113,8 @@ const submitArticleUpdate = async (
       tagList: tags,
     },
   };
-
-  console.log('Обновляем статью с данными:', articleData);
-
   try {
     const response = await updateArticle(articleData).unwrap();
-    console.log('Ответ от API:', response);
     navigate(`/articles/${response.article.slug}`, { replace: true });
     await refetch();
   } catch (error) {

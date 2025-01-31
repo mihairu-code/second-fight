@@ -59,7 +59,14 @@ const OpenedArticle = React.memo(() => {
     favoritesCount,
   } = currentArticle;
   let { username, image } = author;
-  image = !image || !image.startsWith('http') ? baseAvatar : image;
+  image =
+    !image ||
+    !image?.startsWith('http') ||
+    image?.startsWith(
+      'https://static.productionready.io/images/smiley-cyrus.jpg',
+    )
+      ? baseAvatar
+      : image;
 
   return (
     <article className="article-card article_opened">

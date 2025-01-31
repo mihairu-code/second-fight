@@ -33,7 +33,7 @@ export default defineConfig({
   },
   server: {
     open: true,
-    historyApiFallback: true, // Для клиентских маршрутов
+    historyApiFallback: true,
   },
   build: {
     input: path.resolve(__dirname, './index.html'),

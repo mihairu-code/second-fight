@@ -4,7 +4,7 @@ import { Link, Outlet, useNavigate } from 'react-router';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { clearAuth } from '@store/authSlice.js';
 import { setArticles, setPage } from '@store/articleSlice.js';
-import '../styles/Header.less';
+import '@styles/Header.less';
 import baseAvatar from '@assets/baseAvatar.webp';
 
 const Header = React.memo(() => {
