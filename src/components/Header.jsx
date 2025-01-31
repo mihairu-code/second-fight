@@ -4,7 +4,6 @@ import { Link, Outlet, useNavigate } from 'react-router';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { clearAuth } from '@store/authSlice.js';
 import { setArticles, setPage } from '@store/articleSlice.js';
-import baseAvatar from '@assets/base_avatar.jpg';
 import '../styles/Header.less';
 
 const Header = React.memo(() => {
@@ -57,7 +56,10 @@ const Header = React.memo(() => {
             type="person"
             size="xl"
             view="clear"
-            avatar={user?.image || baseAvatar}
+            avatar={
+              user?.image ||
+              'https://kartinki.pics/pics/uploads/posts/2022-09/thumbs/1662497028_1-kartinkin-net-p-ochen-legkie-risunki-pinterest-1.jpg'
+            }
           >
             {user?.username || 'Anonymous'}
           </UserLabel>

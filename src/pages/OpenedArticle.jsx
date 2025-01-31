@@ -13,7 +13,6 @@ import {
 import '@styles/OpenedArticle.less';
 import ArticleHeader from '@components/ArticleHeader';
 import ExtraButtons from '@components/ExtraButtons';
-import baseAvatar from '@assets/base_avatar.jpg';
 
 const OpenedArticle = React.memo(() => {
   const { slug } = useParams();
@@ -59,7 +58,10 @@ const OpenedArticle = React.memo(() => {
     favoritesCount,
   } = currentArticle;
   let { username, image } = author;
-  image = !image || !image.startsWith('http') ? baseAvatar : image;
+  image =
+    !image || !image.startsWith('http')
+      ? 'https://kartinki.pics/pics/uploads/posts/2022-09/thumbs/1662497028_1-kartinkin-net-p-ochen-legkie-risunki-pinterest-1.jpg'
+      : image;
 
   return (
     <article className="article-card article_opened">
