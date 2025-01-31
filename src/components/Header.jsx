@@ -5,6 +5,7 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { clearAuth } from '@store/authSlice.js';
 import { setArticles, setPage } from '@store/articleSlice.js';
 import '../styles/Header.less';
+import baseAvatar from '@assets/baseAvatar.webp';
 
 const Header = React.memo(() => {
   const dispatch = useDispatch();
@@ -56,10 +57,7 @@ const Header = React.memo(() => {
             type="person"
             size="xl"
             view="clear"
-            avatar={
-              user?.image ||
-              'https://kartinki.pics/pics/uploads/posts/2022-09/thumbs/1662497028_1-kartinkin-net-p-ochen-legkie-risunki-pinterest-1.jpg'
-            }
+            avatar={user?.image || baseAvatar}
           >
             {user?.username || 'Anonymous'}
           </UserLabel>

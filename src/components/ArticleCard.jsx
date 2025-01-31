@@ -7,6 +7,7 @@ import {
   renderTags,
 } from '@utils/cardFunctions';
 import '@styles/ArticleCard.less';
+import baseAvatar from '@assets/baseAvatar.webp';
 import ArticleHeader from '@components/ArticleHeader';
 
 const ArticleCard = React.memo(({ data, currentPage }) => {
@@ -28,7 +29,7 @@ const ArticleCard = React.memo(({ data, currentPage }) => {
     image?.startsWith(
       'https://static.productionready.io/images/smiley-cyrus.jpg',
     )
-      ? 'https://kartinki.pics/pics/uploads/posts/2022-09/thumbs/1662497028_1-kartinkin-net-p-ochen-legkie-risunki-pinterest-1.jpg'
+      ? baseAvatar
       : image;
 
   return (
