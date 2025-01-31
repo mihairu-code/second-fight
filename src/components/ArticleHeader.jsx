@@ -1,28 +1,27 @@
 import React, { useCallback } from 'react';
+import { useDispatch } from 'react-redux';
 import {
   ConduitAPI,
   useFavoriteArticleMutation,
+  useGetArticleBySlugQuery,
   useUnfavoriteArticleMutation,
 } from '@services/ConduitAPI.js';
 import { capitalizeFirstLetter } from '@utils/cardFunctions.jsx';
 import { HeartFill } from '@gravity-ui/icons';
 import '@styles/ArticleCard.less';
 import { toaster } from '@gravity-ui/uikit/toaster-singleton-react-18';
-import { useDispatch } from 'react-redux';
 import { Tooltip } from '@gravity-ui/uikit';
 
-const ArticleHeader = ({
-  slug,
-  favorited,
-  favoritesCount,
-  title,
-  component,
-}) => {
+const ArticleHeader = React.memo(({ slug, title, component }) => {
   const dispatch = useDispatch();
-  const [favoriteArticle] = useFavoriteArticleMutation();
-  const [unfavoriteArticle] = useUnfavoriteArticleMutation();
   // eslint-disable-next-line no-undef
   const token = localStorage.getItem('auth');
+  const { data: articleData } = useGetArticleBySlugQuery(slug);
+  const favorited = articleData?.article?.favorited ?? false;
+  const favoritesCount = articleData?.article?.favoritesCount ?? 0;
+
+  const [favoriteArticle] = useFavoriteArticleMutation();
+  const [unfavoriteArticle] = useUnfavoriteArticleMutation();
 
   const showToast = useCallback((name, title, content, theme = 'info') => {
     toaster.add({
@@ -43,43 +42,37 @@ const ArticleHeader = ({
         'Оповещение',
         'Необходимо авторизоваться',
         'info',
-        'Зарегистрироваться', // Текст кнопки
+        'Зарегистрироваться',
       );
       return;
     }
 
     try {
-      if (favorited) {
-        await unfavoriteArticle(slug);
-        dispatch(
-          ConduitAPI.util.updateQueryData(
-            'getArticles',
-            { limit: 5, offset: 0 },
-            draft => {
-              const article = draft.articles.find(a => a.slug === slug);
-              if (article) {
-                article.favorited = false;
-                article.favoritesCount -= 1;
-              }
-            },
-          ),
-        );
-      } else {
-        await favoriteArticle(slug);
-        dispatch(
-          ConduitAPI.util.updateQueryData(
-            'getArticles',
-            { limit: 5, offset: 0 },
-            draft => {
-              const article = draft.articles.find(a => a.slug === slug);
-              if (article) {
-                article.favorited = true;
-                article.favoritesCount += 1;
-              }
-            },
-          ),
-        );
-      }
+      const action = favorited ? unfavoriteArticle : favoriteArticle;
+      await action(slug);
+
+      dispatch(
+        ConduitAPI.util.updateQueryData('getArticleBySlug', slug, draft => {
+          if (draft?.article) {
+            draft.article.favorited = !favorited;
+            draft.article.favoritesCount += favorited ? -1 : 1;
+          }
+        }),
+      );
+
+      dispatch(
+        ConduitAPI.util.updateQueryData(
+          'getArticles',
+          { limit: 5, offset: 0 },
+          draft => {
+            const article = draft.articles.find(a => a.slug === slug);
+            if (article) {
+              article.favorited = !favorited;
+              article.favoritesCount += favorited ? -1 : 1;
+            }
+          },
+        ),
+      );
     } catch (error) {
       console.error('Ошибка при изменении лайка:', error);
     }
@@ -102,6 +95,6 @@ const ArticleHeader = ({
       </div>
     </section>
   );
-};
+});
 
 export default ArticleHeader;

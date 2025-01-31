@@ -59,14 +59,14 @@ export const ConduitAPI = createApi({
         method: 'POST',
         body: { article: { title, description, body, tagList } },
       }),
-      invalidatesTags: ['Article'],
+      invalidatesTags: ['Articles'],
     }),
     deleteArticle: builder.mutation({
       query: slug => ({
         url: `/articles/${slug}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['Article'],
+      invalidatesTags: slug => [{ type: 'Article', id: slug }, 'Articles'],
     }),
     updateArticle: builder.mutation({
       query: ({ slug, article }) => ({
@@ -76,6 +76,7 @@ export const ConduitAPI = createApi({
       }),
       invalidatesTags: (result, error, { slug }) => [
         { type: 'Article', id: slug },
+        'Articles',
       ],
     }),
     favoriteArticle: builder.mutation({
@@ -83,9 +84,9 @@ export const ConduitAPI = createApi({
         url: `/articles/${slug}/favorite`,
         method: 'POST',
       }),
-      invalidatesTags: [
+      invalidatesTags: (result, error, slug) => [
+        { type: 'Article', id: slug },
         'Articles',
-        (result, error, slug) => ({ type: 'Article', id: slug }),
       ],
     }),
     unfavoriteArticle: builder.mutation({
@@ -93,9 +94,9 @@ export const ConduitAPI = createApi({
         url: `/articles/${slug}/favorite`,
         method: 'DELETE',
       }),
-      invalidatesTags: [
+      invalidatesTags: (result, error, slug) => [
+        { type: 'Article', id: slug },
         'Articles',
-        (result, error, slug) => ({ type: 'Article', id: slug }),
       ],
     }),
   }),

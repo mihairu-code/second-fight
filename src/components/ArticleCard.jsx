@@ -10,7 +10,7 @@ import '@styles/ArticleCard.less';
 import ArticleHeader from '@components/ArticleHeader';
 import baseAvatar from '@assets/base_avatar.jpg';
 
-const ArticleCard = ({ data = {}, currentPage }) => {
+const ArticleCard = React.memo(({ data, currentPage }) => {
   const {
     slug,
     title,
@@ -65,6 +65,6 @@ const ArticleCard = ({ data = {}, currentPage }) => {
       </Link>
     </li>
   );
-};
+});
 
 export default ArticleCard;

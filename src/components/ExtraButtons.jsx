@@ -4,7 +4,7 @@ import { CircleExclamationFill } from '@gravity-ui/icons';
 import { useDeleteArticleMutation } from '@services/ConduitAPI.js';
 import { useNavigate } from 'react-router';
 
-const ExtraButtons = ({ slug, data }) => {
+const ExtraButtons = React.memo(({ slug, data }) => {
   const navigate = useNavigate();
   const anchorRef = useRef(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -63,6 +63,6 @@ const ExtraButtons = ({ slug, data }) => {
       </Popup>
     </>
   );
-};
+});
 
 export default ExtraButtons;

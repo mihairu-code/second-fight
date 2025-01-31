@@ -15,19 +15,22 @@ import ArticleHeader from '@components/ArticleHeader';
 import ExtraButtons from '@components/ExtraButtons';
 import baseAvatar from '@assets/base_avatar.jpg';
 
-const OpenedArticle = () => {
+const OpenedArticle = React.memo(() => {
   const { slug } = useParams();
   const dispatch = useDispatch();
-  const { data, error, isLoading } = useGetArticleBySlugQuery(slug);
+
+  const { data, error, isLoading } = useGetArticleBySlugQuery(slug, {
+    skip: useSelector(state => state.article.currentArticle?.slug === slug),
+  });
 
   const currentArticle = useSelector(state => state.article.currentArticle);
   const currentUser = useSelector(state => state.auth?.user?.username);
 
   useEffect(() => {
-    if (data) {
+    if (data && data.article && data.article.slug !== currentArticle?.slug) {
       dispatch(setCurrentArticle(data.article));
     }
-  }, [dispatch, data]);
+  }, [dispatch, data, currentArticle]);
 
   if (isLoading) {
     return <Spin size="xl" className="loadingSpin" />;
@@ -56,14 +59,7 @@ const OpenedArticle = () => {
     favoritesCount,
   } = currentArticle;
   let { username, image } = author;
-  image =
-    !image ||
-    !image?.startsWith('http') ||
-    image?.startsWith(
-      'https://static.productionready.io/images/smiley-cyrus.jpg',
-    )
-      ? baseAvatar
-      : image;
+  image = !image || !image.startsWith('http') ? baseAvatar : image;
 
   return (
     <article className="article-card article_opened">
@@ -97,6 +93,6 @@ const OpenedArticle = () => {
       )}
     </article>
   );
-};
+});
 
 export default OpenedArticle;

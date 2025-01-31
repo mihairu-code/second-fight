@@ -6,10 +6,11 @@ import { useGetArticlesQuery } from '@services/ConduitAPI';
 import { resetArticles, setPage } from '@store/articleSlice.js';
 import '@styles/ArticlesList.less';
 
-export default function ArticlesList() {
+const ArticlesList = React.memo(() => {
   const dispatch = useDispatch();
   const page = useSelector(state => state.article.page);
   const pageSize = 5;
+
   const offset = useMemo(() => (page - 1) * pageSize, [page]);
 
   const { data, error, isLoading } = useGetArticlesQuery(
@@ -21,9 +22,9 @@ export default function ArticlesList() {
 
   const handlePageChange = useCallback(
     newPage => {
-      dispatch(setPage(newPage));
+      if (newPage !== page) dispatch(setPage(newPage));
     },
-    [dispatch],
+    [dispatch, page],
   );
 
   useEffect(() => {
@@ -65,8 +66,10 @@ export default function ArticlesList() {
       )}
     </>
   );
-}
+});
 
 const ErrorMessage = ({ message }) => (
   <div>Ошибка загрузки: {message || 'Неизвестная ошибка'}</div>
 );
+
+export default ArticlesList;

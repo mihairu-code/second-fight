@@ -7,7 +7,7 @@ import { setArticles, setPage } from '@store/articleSlice.js';
 import baseAvatar from '@assets/base_avatar.jpg';
 import '../styles/Header.less';
 
-export default function Header() {
+const Header = React.memo(() => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector(state => state.auth.user, shallowEqual);
@@ -92,4 +92,6 @@ export default function Header() {
       </main>
     </>
   );
-}
+});
+
+export default Header;
