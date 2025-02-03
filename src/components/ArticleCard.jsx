@@ -28,7 +28,8 @@ const ArticleCard = React.memo(({ data, currentPage }) => {
     !image?.startsWith('http') ||
     image?.startsWith(
       'https://static.productionready.io/images/smiley-cyrus.jpg',
-    )
+    ) ||
+    image?.startsWith('https://api.realworld.io/images/smiley-cyrus.jpg')
       ? baseAvatar
       : image;
 
