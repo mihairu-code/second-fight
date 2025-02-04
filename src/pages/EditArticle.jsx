@@ -17,10 +17,12 @@ import {
 } from '@utils/cardFunctions.jsx';
 
 import '@styles/Sign.less';
+import { useDispatch } from 'react-redux';
 
 export default function EditArticle() {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const { data, error, isLoading, refetch } = useGetArticleBySlugQuery(slug);
   const [
@@ -59,6 +61,7 @@ export default function EditArticle() {
           updateArticle,
           navigate,
           refetch,
+          dispatch,
         ),
       )}
     >

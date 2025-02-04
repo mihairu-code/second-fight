@@ -1,10 +1,17 @@
 import React, { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Button, Icon, Label, TextArea, TextInput } from '@gravity-ui/uikit';
+import {
+  Button,
+  Card,
+  Icon,
+  Label,
+  TextArea,
+  TextInput,
+} from '@gravity-ui/uikit';
 import { Pencil, SquarePlus } from '@gravity-ui/icons';
 import { useCreateArticleMutation } from '@services/ConduitAPI';
 import { useDispatch, useSelector } from 'react-redux';
-import { resetArticles, setArticleForm } from '@store/articleSlice';
+import { setArticleForm } from '@store/articleSlice';
 import { useNavigate } from 'react-router';
 import { editTag, handleTagUpdate, removeTag } from '@utils/cardFunctions';
 import '@styles/Sign.less';
@@ -45,12 +52,13 @@ export default function CreateArticle() {
         body: text,
         tagList,
       }).unwrap();
-      console.log('Статья успешно создана:', response);
       const slug = response.article.slug;
-      dispatch(resetArticles());
+      dispatch(
+        setArticleForm({ title: '', description: '', body: '', tagList: [] }),
+      );
       navigate(`/articles/${slug}`);
     } catch (error) {
-      console.error('Ошибка создания статьи:', error);
+      return <Card children={error} />;
     }
   };
 

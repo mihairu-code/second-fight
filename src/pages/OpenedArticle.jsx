@@ -19,9 +19,7 @@ const OpenedArticle = React.memo(() => {
   const { slug } = useParams();
   const dispatch = useDispatch();
 
-  const { data, error, isLoading } = useGetArticleBySlugQuery(slug, {
-    skip: useSelector(state => state.article.currentArticle?.slug === slug),
-  });
+  const { data, error, isLoading, refetch } = useGetArticleBySlugQuery(slug);
 
   const currentArticle = useSelector(state => state.article.currentArticle);
   const currentUser = useSelector(state => state.auth?.user?.username);
@@ -31,6 +29,10 @@ const OpenedArticle = React.memo(() => {
       dispatch(setCurrentArticle(data.article));
     }
   }, [dispatch, data, currentArticle]);
+
+  useEffect(() => {
+    refetch();
+  }, [slug, refetch]);
 
   if (isLoading) {
     return <Spin size="xl" className="loadingSpin" />;
