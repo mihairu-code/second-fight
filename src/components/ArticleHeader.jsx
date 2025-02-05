@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   ConduitAPI,
   useFavoriteArticleMutation,
@@ -10,10 +10,12 @@ import { HeartFill } from '@gravity-ui/icons';
 import '@styles/ArticleCard.less';
 import { toaster } from '@gravity-ui/uikit/toaster-singleton-react-18';
 import { Tooltip } from '@gravity-ui/uikit';
+import { setCurrentArticle } from '@store/articleSlice.js';
 
 const ArticleHeader = React.memo(
   ({ favorited, favoritesCount, slug, title, component }) => {
     const dispatch = useDispatch();
+    const currentArticle = useSelector(state => state.article.currentArticle);
     // eslint-disable-next-line no-undef
     const token = localStorage.getItem('auth');
 
@@ -69,6 +71,14 @@ const ArticleHeader = React.memo(
               }
             },
           ),
+        );
+
+        dispatch(
+          setCurrentArticle({
+            ...currentArticle,
+            favorited: !favorited,
+            favoritesCount: favorited ? favoritesCount - 1 : favoritesCount + 1,
+          }),
         );
       } catch (error) {
         console.error('Ошибка при изменении лайка:', error);
