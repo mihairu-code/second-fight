@@ -7,7 +7,6 @@ import {
   useUpdateArticleMutation,
 } from '@services/ConduitAPI';
 import { useNavigate, useParams } from 'react-router';
-
 import {
   editTag,
   handleTagUpdate,
@@ -15,67 +14,54 @@ import {
   setArticleFormValues,
   submitArticleUpdate,
 } from '@utils/cardFunctions.jsx';
-
 import '@styles/Sign.less';
-import { useDispatch } from 'react-redux';
 
 export default function EditArticle() {
   const { slug } = useParams();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-
-  const { data, error, isLoading, refetch } = useGetArticleBySlugQuery(slug);
-  const [
-    updateArticle,
-    { isLoading: isUpdating, isError, error: updateError },
-  ] = useUpdateArticleMutation();
+  const { data, error, isLoading } = useGetArticleBySlugQuery(slug);
+  const [updateArticle, { isLoading: isUpdating }] = useUpdateArticleMutation();
+  const [tags, setTags] = useState([]);
+  const [editIndex, setEditIndex] = useState(null);
 
   const {
     control,
     handleSubmit,
     setValue,
-    formState: { errors },
     getValues,
-  } = useForm({ mode: 'onChange' });
-
-  const [tags, setTags] = useState([]);
-  const [editIndex, setEditIndex] = useState(null);
+    formState: { errors },
+  } = useForm({
+    mode: 'onChange',
+    defaultValues: {
+      title: '',
+      description: '',
+      text: '',
+      tag: '',
+    },
+  });
 
   useEffect(() => {
     setArticleFormValues(data, setValue, setTags);
   }, [data, setValue]);
 
   if (isLoading) return <div>Загрузка...</div>;
-  if (error) return <div>Ошибка при загрузке статьи: {error.message}</div>;
-  if (isError && updateError)
-    return <div>Ошибка при обновлении статьи: {updateError.message}</div>;
+  if (error) return <div>Ошибка: {error.message}</div>;
+
+  const onSubmit = async formData => {
+    await submitArticleUpdate(formData, slug, tags, updateArticle, navigate);
+  };
 
   return (
-    <form
-      className="create-article"
-      onSubmit={handleSubmit(formData =>
-        submitArticleUpdate(
-          formData,
-          slug,
-          tags,
-          updateArticle,
-          navigate,
-          refetch,
-          dispatch,
-        ),
-      )}
-    >
+    <form className="create-article" onSubmit={handleSubmit(onSubmit)}>
       <h1>Редактировать статью</h1>
       <Controller
         name="title"
         control={control}
-        defaultValue=""
         rules={{ required: 'Заголовок обязателен' }}
         render={({ field }) => (
           <TextInput
             {...field}
             placeholder="Заголовок"
-            note={field.value ? 'Заголовок' : undefined}
             error={!!errors.title}
             errorMessage={errors.title?.message}
           />
@@ -84,13 +70,11 @@ export default function EditArticle() {
       <Controller
         name="description"
         control={control}
-        defaultValue=""
         rules={{ required: 'Краткое описание обязательно' }}
         render={({ field }) => (
           <TextInput
             {...field}
             placeholder="Краткое описание"
-            note={field.value ? 'Краткое описание' : undefined}
             error={!!errors.description}
             errorMessage={errors.description?.message}
           />
@@ -99,32 +83,24 @@ export default function EditArticle() {
       <Controller
         name="text"
         control={control}
-        defaultValue=""
         rules={{ required: 'Текст статьи обязателен' }}
         render={({ field }) => (
           <TextArea
             {...field}
             placeholder="Текст статьи"
-            note={field.value ? 'Текст статьи' : undefined}
             error={!!errors.text}
             errorMessage={errors.text?.message}
             rows={10}
           />
         )}
       />
+
       <section className="tags-section">
         <Controller
           name="tag"
           control={control}
-          defaultValue=""
           render={({ field }) => (
-            <TextInput
-              {...field}
-              placeholder="Добавить тег"
-              note={field.value ? 'Тег' : undefined}
-              error={!!errors.tag}
-              errorMessage={errors.tag?.message}
-            />
+            <TextInput {...field} placeholder="Добавить тег" />
           )}
         />
         <Button
@@ -159,6 +135,7 @@ export default function EditArticle() {
           ))}
         </div>
       </section>
+
       <Button type="submit" size="l" view="action" disabled={isUpdating}>
         {isUpdating ? 'Обновление...' : 'Обновить статью'}
       </Button>

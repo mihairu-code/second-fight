@@ -4,7 +4,6 @@ import { ConduitAPI } from '@services/ConduitAPI';
 const initialState = {
   openArticleSlug: null,
   articles: [],
-  currentArticle: null,
   slug: null,
   articleForm: {
     title: '',
@@ -15,7 +14,6 @@ const initialState = {
   },
   page: 1,
   pageSize: 5,
-  filter: '',
   total: 0,
 };
 
@@ -32,9 +30,6 @@ const articleSlice = createSlice({
     setArticles(state, action) {
       state.articles = action.payload.articles;
       state.total = action.payload.total;
-    },
-    setCurrentArticle(state, action) {
-      state.currentArticle = action.payload;
     },
     setArticleForm(state, action) {
       state.articleForm = { ...state.articleForm, ...action.payload };
@@ -57,7 +52,6 @@ const articleSlice = createSlice({
 
 export const {
   setPage,
-  setFilter,
   setArticles,
   setCurrentArticle,
   setArticleForm,

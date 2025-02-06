@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import {
   ConduitAPI,
   useFavoriteArticleMutation,
@@ -10,17 +9,14 @@ import { HeartFill } from '@gravity-ui/icons';
 import '@styles/ArticleCard.less';
 import { toaster } from '@gravity-ui/uikit/toaster-singleton-react-18';
 import { Tooltip } from '@gravity-ui/uikit';
-import { setCurrentArticle } from '@store/articleSlice.js';
 
 const ArticleHeader = React.memo(
-  ({ favorited, favoritesCount, slug, title, component }) => {
-    const dispatch = useDispatch();
-    const currentArticle = useSelector(state => state.article.currentArticle);
-    // eslint-disable-next-line no-undef
-    const token = localStorage.getItem('auth');
-
+  ({ favorited, favoritesCount, slug, title }) => {
     const [favoriteArticle] = useFavoriteArticleMutation();
     const [unfavoriteArticle] = useUnfavoriteArticleMutation();
+
+    // eslint-disable-next-line no-undef
+    const token = localStorage.getItem('auth');
 
     const showToast = useCallback((name, title, content, theme = 'info') => {
       toaster.add({
@@ -36,13 +32,7 @@ const ArticleHeader = React.memo(
       e.preventDefault();
 
       if (!token) {
-        showToast(
-          'consent-error',
-          'Оповещение',
-          'Необходимо авторизоваться',
-          'info',
-          'Зарегистрироваться',
-        );
+        showToast('consent-error', 'Оповещение', 'Необходимо авторизоваться');
         return;
       }
 
@@ -50,35 +40,23 @@ const ArticleHeader = React.memo(
         const action = favorited ? unfavoriteArticle : favoriteArticle;
         await action(slug);
 
-        dispatch(
-          ConduitAPI.util.updateQueryData('getArticleBySlug', slug, draft => {
-            if (draft?.article) {
-              draft.article.favorited = !favorited;
-              draft.article.favoritesCount += favorited ? -1 : 1;
+        ConduitAPI.util.updateQueryData('getArticleBySlug', slug, draft => {
+          if (draft?.article) {
+            draft.article.favorited = !favorited;
+            draft.article.favoritesCount += favorited ? -1 : 1;
+          }
+        });
+
+        ConduitAPI.util.updateQueryData(
+          'getArticles',
+          { limit: 5, offset: 0 },
+          draft => {
+            const article = draft.articles.find(a => a.slug === slug);
+            if (article) {
+              article.favorited = !favorited;
+              article.favoritesCount += favorited ? -1 : 1;
             }
-          }),
-        );
-
-        dispatch(
-          ConduitAPI.util.updateQueryData(
-            'getArticles',
-            { limit: 5, offset: 0 },
-            draft => {
-              const article = draft.articles.find(a => a.slug === slug);
-              if (article) {
-                article.favorited = !favorited;
-                article.favoritesCount += favorited ? -1 : 1;
-              }
-            },
-          ),
-        );
-
-        dispatch(
-          setCurrentArticle({
-            ...currentArticle,
-            favorited: !favorited,
-            favoritesCount: favorited ? favoritesCount - 1 : favoritesCount + 1,
-          }),
+          },
         );
       } catch (error) {
         console.error('Ошибка при изменении лайка:', error);
@@ -88,9 +66,7 @@ const ArticleHeader = React.memo(
     return (
       <section className="section-title">
         <Tooltip content={capitalizeFirstLetter(title)} placement="top">
-          <h5 className={`article-title ${component && 'article-title__card'}`}>
-            {capitalizeFirstLetter(title)}
-          </h5>
+          <h5 className="article-title">{capitalizeFirstLetter(title)}</h5>
         </Tooltip>
         <div className="like-container" onClick={handleToggleLike}>
           <HeartFill
