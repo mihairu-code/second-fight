@@ -1,22 +1,24 @@
-import { Button, Popup } from '@gravity-ui/uikit';
+import { Button, Card, Popup } from '@gravity-ui/uikit';
 import React, { useRef, useState } from 'react';
 import { CircleExclamationFill } from '@gravity-ui/icons';
 import { useDeleteArticleMutation } from '@services/ConduitAPI.js';
 import { useNavigate } from 'react-router';
 
-const ExtraButtons = React.memo(({ slug, data }) => {
+const ExtraButtons = React.memo(({ slug }) => {
   const navigate = useNavigate();
   const anchorRef = useRef(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [deleteArticle] = useDeleteArticleMutation();
+
   const openPopup = () => setIsPopupOpen(true);
   const closePopup = () => setIsPopupOpen(false);
+
   const handleDelete = async () => {
     try {
       await deleteArticle(slug).unwrap();
       navigate('/articles');
     } catch (error) {
-      console.error('Ошибка при удалении статьи:', error);
+      return <Card children={error} />;
     } finally {
       closePopup();
     }
@@ -29,9 +31,7 @@ const ExtraButtons = React.memo(({ slug, data }) => {
           Удалить
         </Button>
         <Button
-          onClick={() =>
-            navigate(`/articles/edit/${slug}`, { state: { data } })
-          }
+          onClick={() => navigate(`/articles/edit/${slug}`)}
           view="outlined-success"
         >
           Редактировать
@@ -49,7 +49,7 @@ const ExtraButtons = React.memo(({ slug, data }) => {
         <div className="popup-content">
           <CircleExclamationFill className="exlamation-sign" />
           <p className="popup-text">
-            Вы уверены, что хотите удалить эту статью ?
+            Вы уверены, что хотите удалить эту статью?
           </p>
           <div className="popup-actions">
             <Button onClick={closePopup} view="outlined">
