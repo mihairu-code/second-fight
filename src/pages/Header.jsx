@@ -1,29 +1,34 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, UserLabel } from '@gravity-ui/uikit';
 import { Link, Outlet, useNavigate } from 'react-router';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { clearAuth } from '@store/authSlice.js';
-import { setArticles, setPage } from '@store/articleSlice.js';
+import { ConduitAPI } from '@services/ConduitAPI';
 import '@styles/Header.less';
 import baseAvatar from '@assets/baseAvatar.webp';
 
 const Header = React.memo(() => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const user = useSelector(state => state.auth.user, shallowEqual);
+  const [page, setPage] = useState(1);
 
   const handleLogoClick = useCallback(() => {
-    dispatch(setPage(1)); // Устанавливаем первую страницу
+    setPage(1);
     navigate('/articles');
-  }, [dispatch, navigate]);
+  }, [navigate]);
 
   const logout = useCallback(() => {
     dispatch(clearAuth());
     // eslint-disable-next-line no-undef
     localStorage.removeItem('auth');
-    dispatch(setArticles({ articles: [], total: 0 }));
+    dispatch(ConduitAPI.util.invalidateTags(['Articles', 'Article']));
     navigate('/articles');
   }, [dispatch, navigate]);
+
+  useEffect(() => {
+    console.log('User state changed:', user);
+  }, [user]);
 
   const guestLinks = useMemo(
     () => (

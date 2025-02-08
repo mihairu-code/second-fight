@@ -2,8 +2,6 @@ import React, { useEffect } from 'react';
 import { useParams } from 'react-router';
 import ReactMarkdown from 'react-markdown';
 import { Card, Spin, Text, User } from '@gravity-ui/uikit';
-import { useDispatch, useSelector } from 'react-redux';
-import { setCurrentArticle } from '@store/articleSlice';
 import { useGetArticleBySlugQuery } from '@services/ConduitAPI';
 import {
   capitalizeFirstLetter,
@@ -14,21 +12,13 @@ import '@styles/OpenedArticle.less';
 import ArticleHeader from '@components/ArticleHeader';
 import ExtraButtons from '@components/ExtraButtons';
 import baseAvatar from '@assets/baseAvatar.webp';
+import { useSelector } from 'react-redux';
 
 const OpenedArticle = React.memo(() => {
   const { slug } = useParams();
-  const dispatch = useDispatch();
-
   const { data, error, isLoading, refetch } = useGetArticleBySlugQuery(slug);
 
-  const currentArticle = useSelector(state => state.article.currentArticle);
   const currentUser = useSelector(state => state.auth?.user?.username);
-
-  useEffect(() => {
-    if (data && data.article && data.article.slug !== currentArticle?.slug) {
-      dispatch(setCurrentArticle(data.article));
-    }
-  }, [dispatch, data, currentArticle]);
 
   useEffect(() => {
     refetch();
@@ -46,7 +36,7 @@ const OpenedArticle = React.memo(() => {
     );
   }
 
-  if (!currentArticle) {
+  if (!data?.article) {
     return <Card theme="info">Статья не найдена.</Card>;
   }
 
@@ -59,7 +49,7 @@ const OpenedArticle = React.memo(() => {
     author = {},
     favorited,
     favoritesCount,
-  } = currentArticle;
+  } = data.article;
   let { username, image } = author;
   image =
     !image ||
@@ -99,7 +89,7 @@ const OpenedArticle = React.memo(() => {
         size="l"
       />
       {currentUser === username && (
-        <ExtraButtons slug={slug} data={currentArticle} />
+        <ExtraButtons slug={slug} data={data.article} />
       )}
     </article>
   );

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import {
   Button,
@@ -10,20 +10,13 @@ import {
 } from '@gravity-ui/uikit';
 import { Pencil, SquarePlus } from '@gravity-ui/icons';
 import { useCreateArticleMutation } from '@services/ConduitAPI';
-import { useDispatch, useSelector } from 'react-redux';
-import { setArticleForm } from '@store/articleSlice';
 import { useNavigate } from 'react-router';
 import { editTag, handleTagUpdate, removeTag } from '@utils/cardFunctions';
 import '@styles/Sign.less';
 
 export default function CreateArticle() {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [createArticle, { isLoading }] = useCreateArticleMutation();
-
-  const { title, description, body, tagList, editTagIndex } = useSelector(
-    state => state.article.articleForm,
-  );
 
   const {
     control,
@@ -33,14 +26,11 @@ export default function CreateArticle() {
     getValues,
   } = useForm({
     mode: 'onChange',
-    defaultValues: { title, description, text: body, tag: '' },
+    defaultValues: { title: '', description: '', text: '', tag: '' },
   });
 
-  useEffect(() => {
-    setValue('title', title);
-    setValue('description', description);
-    setValue('text', body);
-  }, [title, description, body, setValue]);
+  const [tags, setTags] = React.useState([]);
+  const [editIndex, setEditIndex] = React.useState(null);
 
   const onSubmit = async data => {
     const { title, description, text } = data;
@@ -50,12 +40,9 @@ export default function CreateArticle() {
         title,
         description,
         body: text,
-        tagList,
+        tagList: tags,
       }).unwrap();
       const slug = response.article.slug;
-      dispatch(
-        setArticleForm({ title: '', description: '', body: '', tagList: [] }),
-      );
       navigate(`/articles/${slug}`);
     } catch (error) {
       return <Card children={error} />;
@@ -72,10 +59,6 @@ export default function CreateArticle() {
         render={({ field }) => (
           <TextInput
             {...field}
-            onChange={e => {
-              field.onChange(e);
-              dispatch(setArticleForm({ title: e.target.value }));
-            }}
             placeholder="Заголовок"
             note={field.value ? 'Заголовок' : undefined}
             error={!!errors.title}
@@ -90,10 +73,6 @@ export default function CreateArticle() {
         render={({ field }) => (
           <TextInput
             {...field}
-            onChange={e => {
-              field.onChange(e);
-              dispatch(setArticleForm({ description: e.target.value }));
-            }}
             placeholder="Краткое описание"
             note={field.value ? 'Краткое описание' : undefined}
             error={!!errors.description}
@@ -108,10 +87,6 @@ export default function CreateArticle() {
         render={({ field }) => (
           <TextArea
             {...field}
-            onChange={e => {
-              field.onChange(e);
-              dispatch(setArticleForm({ body: e.target.value }));
-            }}
             placeholder="Текст статьи"
             note={field.value ? 'Текст статьи' : undefined}
             error={!!errors.text}
@@ -140,37 +115,27 @@ export default function CreateArticle() {
           onClick={() =>
             handleTagUpdate(
               getValues,
-              tagList,
-              newTags => dispatch(setArticleForm({ tagList: newTags })),
+              tags,
+              setTags,
               setValue,
-              editTagIndex,
-              index => dispatch(setArticleForm({ editTagIndex: index })),
+              editIndex,
+              setEditIndex,
             )
           }
           size="m"
           view="flat"
         >
-          <Icon size={20} data={editTagIndex !== null ? Pencil : SquarePlus} />
+          <Icon size={20} data={editIndex !== null ? Pencil : SquarePlus} />
         </Button>
         <div className="tags-list">
-          {Array.isArray(tagList) && tagList.length > 0 ? (
-            tagList.map((tag, index) => (
+          {Array.isArray(tags) && tags.length > 0 ? (
+            tags.map((tag, index) => (
               <Label
                 key={index}
                 type="close"
-                onClick={() =>
-                  editTag(index, tagList, setValue, index =>
-                    dispatch(setArticleForm({ editTagIndex: index })),
-                  )
-                }
+                onClick={() => editTag(index, tags, setValue, setEditIndex)}
                 onCloseClick={() =>
-                  removeTag(
-                    index,
-                    tagList,
-                    newTags => dispatch(setArticleForm({ tagList: newTags })),
-                    editTagIndex,
-                    index => dispatch(setArticleForm({ editTagIndex: index })),
-                  )
+                  removeTag(index, tags, setTags, editIndex, setEditIndex)
                 }
               >
                 {tag}

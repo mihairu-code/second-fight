@@ -1,24 +1,18 @@
 import React, { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { HeartFill } from '@gravity-ui/icons';
+import { Tooltip } from '@gravity-ui/uikit';
 import {
-  ConduitAPI,
   useFavoriteArticleMutation,
   useUnfavoriteArticleMutation,
-} from '@services/ConduitAPI.js';
-import { capitalizeFirstLetter } from '@utils/cardFunctions.jsx';
-import { HeartFill } from '@gravity-ui/icons';
+} from '@services/ConduitAPI';
+import { capitalizeFirstLetter } from '@utils/cardFunctions';
 import '@styles/ArticleCard.less';
 import { toaster } from '@gravity-ui/uikit/toaster-singleton-react-18';
-import { Tooltip } from '@gravity-ui/uikit';
-import { setCurrentArticle } from '@store/articleSlice.js';
 
 const ArticleHeader = React.memo(
   ({ favorited, favoritesCount, slug, title, component }) => {
-    const dispatch = useDispatch();
-    const currentArticle = useSelector(state => state.article.currentArticle);
-    // eslint-disable-next-line no-undef
-    const token = localStorage.getItem('auth');
-
+    const currentUser = useSelector(state => state.auth?.user?.username);
     const [favoriteArticle] = useFavoriteArticleMutation();
     const [unfavoriteArticle] = useUnfavoriteArticleMutation();
 
@@ -35,51 +29,19 @@ const ArticleHeader = React.memo(
     const handleToggleLike = async e => {
       e.preventDefault();
 
-      if (!token) {
+      if (!currentUser) {
         showToast(
           'consent-error',
           'Оповещение',
           'Необходимо авторизоваться',
           'info',
-          'Зарегистрироваться',
         );
         return;
       }
 
       try {
         const action = favorited ? unfavoriteArticle : favoriteArticle;
-        await action(slug);
-
-        dispatch(
-          ConduitAPI.util.updateQueryData('getArticleBySlug', slug, draft => {
-            if (draft?.article) {
-              draft.article.favorited = !favorited;
-              draft.article.favoritesCount += favorited ? -1 : 1;
-            }
-          }),
-        );
-
-        dispatch(
-          ConduitAPI.util.updateQueryData(
-            'getArticles',
-            { limit: 5, offset: 0 },
-            draft => {
-              const article = draft.articles.find(a => a.slug === slug);
-              if (article) {
-                article.favorited = !favorited;
-                article.favoritesCount += favorited ? -1 : 1;
-              }
-            },
-          ),
-        );
-
-        dispatch(
-          setCurrentArticle({
-            ...currentArticle,
-            favorited: !favorited,
-            favoritesCount: favorited ? favoritesCount - 1 : favoritesCount + 1,
-          }),
-        );
+        await action(slug).unwrap();
       } catch (error) {
         console.error('Ошибка при изменении лайка:', error);
       }

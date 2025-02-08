@@ -7,15 +7,12 @@ import {
   useUpdateArticleMutation,
 } from '@services/ConduitAPI';
 import { useNavigate, useParams } from 'react-router';
-
 import {
   editTag,
   handleTagUpdate,
   removeTag,
   setArticleFormValues,
-  submitArticleUpdate,
-} from '@utils/cardFunctions.jsx';
-
+} from '@utils/cardFunctions';
 import '@styles/Sign.less';
 import { useDispatch } from 'react-redux';
 
@@ -42,8 +39,32 @@ export default function EditArticle() {
   const [editIndex, setEditIndex] = useState(null);
 
   useEffect(() => {
-    setArticleFormValues(data, setValue, setTags);
+    if (data?.article) {
+      setArticleFormValues(data, setValue, setTags);
+    }
   }, [data, setValue]);
+
+  const onSubmit = async formData => {
+    const { title, description, text } = formData;
+
+    const articleData = {
+      slug,
+      article: {
+        title,
+        description,
+        body: text,
+        tagList: tags,
+      },
+    };
+
+    try {
+      const response = await updateArticle(articleData).unwrap();
+      navigate(`/articles/${response.article.slug}`);
+      await refetch();
+    } catch (error) {
+      console.error('Ошибка обновления статьи:', error);
+    }
+  };
 
   if (isLoading) return <div>Загрузка...</div>;
   if (error) return <div>Ошибка при загрузке статьи: {error.message}</div>;
@@ -51,20 +72,7 @@ export default function EditArticle() {
     return <div>Ошибка при обновлении статьи: {updateError.message}</div>;
 
   return (
-    <form
-      className="create-article"
-      onSubmit={handleSubmit(formData =>
-        submitArticleUpdate(
-          formData,
-          slug,
-          tags,
-          updateArticle,
-          navigate,
-          refetch,
-          dispatch,
-        ),
-      )}
-    >
+    <form className="create-article" onSubmit={handleSubmit(onSubmit)}>
       <h1>Редактировать статью</h1>
       <Controller
         name="title"

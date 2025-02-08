@@ -24,8 +24,8 @@
       width: fit-content;
       color: rgba(54, 110, 255, 1);
       font-family:
-        Inter UI,
-        sans-serif;
+              Inter UI,
+              sans-serif;
       font-size: 1.25rem;
       line-height: 1.6rem;
       text-align: left;
@@ -47,8 +47,8 @@
       align-self: center;
       color: transparent;
       transition:
-        color 0.3s ease-in-out,
-        transform 0.3s ease-in-out;
+              color 0.3s ease-in-out,
+              transform 0.3s ease-in-out;
       &:hover {
         transform: scale(111%);
         color: rgba(255, 0, 0, 0.25);
@@ -93,8 +93,8 @@
   & .card-text {
     color: rgba(0, 0, 0, 0.7);
     font-family:
-      Inter UI,
-      sans-serif;
+            Inter UI,
+            sans-serif;
     font-size: 1em;
     width: 75%;
     line-height: 1.7em;
@@ -102,6 +102,20 @@
     word-spacing: 0.3em;
     text-underline-position: from-font;
     text-decoration-skip-ink: none;
+  }
+
+  & .card-body {
+    color: rgba(0, 0, 0, 0.7);
+    font-family:
+            Inter UI,
+            sans-serif;
+    font-size: 0.9em;
+    width: 75%;
+    line-height: 1.5em;
+    text-align: left;
+    white-space: nowrap; /* Текст в одну строку */
+    overflow: hidden;    /* Скрываем текст, выходящий за пределы */
+    text-overflow: ellipsis; /* Добавляем многоточие */
   }
 
   .card-user {
@@ -117,9 +131,9 @@
       &:first-child {
         color: rgba(0, 0, 0, 0.65);
         font-family:
-          Inter UI,
-          Inter,
-          sans-serif;
+                Inter UI,
+                Inter,
+                sans-serif;
         font-size: 1.5em;
         font-weight: 200;
         line-height: 1.5em;
@@ -130,9 +144,9 @@
       &:last-child {
         color: rgba(0, 0, 0, 0.5);
         font-family:
-          Inter UI,
-          Inter,
-          sans-serif;
+                Inter UI,
+                Inter,
+                sans-serif;
         font-size: 1em;
         line-height: 1.75em;
         text-align: left;

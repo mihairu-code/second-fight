@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { toaster } from '@gravity-ui/uikit/toaster-singleton-react-18'; // Путь к вашему API
+import { toaster } from '@gravity-ui/uikit/toaster-singleton-react-18';
 
 const authSlice = createSlice({
   name: 'auth',

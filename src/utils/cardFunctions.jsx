@@ -1,5 +1,4 @@
 import { Label } from '@gravity-ui/uikit';
-import { setCurrentArticle } from '@store/articleSlice';
 
 const randomColorTags = tag => {
   const colors = [
@@ -95,39 +94,6 @@ const editTag = (index, tags, setValue, setEditIndex) => {
   setEditIndex(index);
 };
 
-const submitArticleUpdate = async (
-  data,
-  slug,
-  tags,
-  updateArticle,
-  navigate,
-  refetch,
-  dispatch,
-) => {
-  const { title, description, text } = data;
-
-  const articleData = {
-    slug,
-    article: {
-      title,
-      description,
-      body: text,
-      tagList: tags,
-    },
-  };
-  try {
-    const response = await updateArticle(articleData).unwrap();
-
-    // Обновляем Redux-хранилище
-    dispatch(setCurrentArticle(response.article));
-
-    navigate(`/articles/${response.article.slug}`, { replace: true });
-    await refetch();
-  } catch (error) {
-    console.error('Ошибка обновления статьи:', error);
-  }
-};
-
 export {
   formatDate,
   randomColorTags,
@@ -137,5 +103,4 @@ export {
   setArticleFormValues,
   handleTagUpdate,
   editTag,
-  submitArticleUpdate,
 };

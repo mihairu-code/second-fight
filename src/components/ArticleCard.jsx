@@ -1,6 +1,7 @@
 import React from 'react';
 import { Text, User } from '@gravity-ui/uikit';
 import { Link } from 'react-router';
+import removeMarkdown from 'remove-markdown';
 import {
   capitalizeFirstLetter,
   formatDate,
@@ -15,6 +16,7 @@ const ArticleCard = React.memo(({ data, currentPage }) => {
     slug,
     title,
     description,
+    body, // Текст статьи
     createdAt,
     updatedAt,
     tagList,
@@ -32,6 +34,8 @@ const ArticleCard = React.memo(({ data, currentPage }) => {
     image?.startsWith('https://api.realworld.io/images/smiley-cyrus.jpg')
       ? baseAvatar
       : image;
+
+  const plainTextBody = removeMarkdown(body);
 
   return (
     <li key={slug}>
@@ -55,6 +59,14 @@ const ArticleCard = React.memo(({ data, currentPage }) => {
           variant="caption-2"
         >
           {capitalizeFirstLetter(description)}
+        </Text>
+        <Text
+          className="card-body"
+          whiteSpace="nowrap"
+          ellipsis
+          variant="body-2"
+        >
+          {capitalizeFirstLetter(plainTextBody)}
         </Text>
         <User
           className="card-user"

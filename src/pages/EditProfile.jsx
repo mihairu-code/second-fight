@@ -10,7 +10,7 @@ import { setAuth } from '@store/authSlice.js';
 export default function EditProfile() {
   const { user } = useSelector(state => state.auth);
   const dispatch = useDispatch();
-  const [updateUser, { isLoading }] = useUpdateUserMutation();
+  const [updateUser] = useUpdateUserMutation();
 
   const {
     control,

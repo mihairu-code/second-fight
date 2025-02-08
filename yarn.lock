@@ -3934,6 +3934,11 @@ remark-rehype@^11.0.0:
     unified "^11.0.0"
     vfile "^6.0.0"
 
+remove-markdown@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/remove-markdown/-/remove-markdown-0.6.0.tgz#3dd8311f4a6db3c9036ac38bc167866ab5a2f187"
+  integrity sha512-B9g8yo5Zp1wXfZ77M1RLpqI7xrBBERkp7+3/Btm9N/uZV5xhXZjzIxDbCKz7CSj141lWDuCnQuH12DKLUv4Ghw==
+
 reselect@^5.1.0:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/reselect/-/reselect-5.1.1.tgz#c766b1eb5d558291e5e550298adb0becc24bb72e"

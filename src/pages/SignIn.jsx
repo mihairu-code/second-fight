@@ -3,10 +3,9 @@ import { Controller, useForm } from 'react-hook-form';
 import { Button, TextInput } from '@gravity-ui/uikit';
 import { Link, useNavigate } from 'react-router';
 import { toaster } from '@gravity-ui/uikit/toaster-singleton-react-18';
-import { useLoginMutation } from '@services/ConduitAPI';
+import { ConduitAPI, useLoginMutation } from '@services/ConduitAPI';
 import { useDispatch } from 'react-redux';
 import { setAuth } from '@store/authSlice.js';
-import { resetArticles } from '@store/articleSlice.js';
 import '@styles/Sign.less';
 
 export default function SignIn() {
@@ -38,8 +37,7 @@ export default function SignIn() {
       );
 
       dispatch(setAuth({ token: response.user.token, user: response.user }));
-
-      dispatch(resetArticles());
+      dispatch(ConduitAPI.util.invalidateTags(['Articles', 'Article']));
 
       showToast(
         'login-success',
