@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Button, UserLabel } from '@gravity-ui/uikit';
 import { Link, Outlet, useNavigate } from 'react-router';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
@@ -25,10 +25,6 @@ const Header = React.memo(() => {
     dispatch(ConduitAPI.util.invalidateTags(['Articles', 'Article']));
     navigate('/articles');
   }, [dispatch, navigate]);
-
-  useEffect(() => {
-    console.log('User state changed:', user);
-  }, [user]);
 
   const guestLinks = useMemo(
     () => (
