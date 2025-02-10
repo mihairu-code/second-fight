@@ -14,6 +14,7 @@ export default function SignUp() {
   const {
     control,
     handleSubmit,
+    setError,
     formState: { errors },
     watch,
   } = useForm({ mode: 'onChange' });
@@ -53,16 +54,26 @@ export default function SignUp() {
       );
       navigate('/sign-in');
     } catch (error) {
-      const errorMessage = error?.data?.errors
-        ? Object.entries(error.data.errors)
-            .map(
-              ([key, value]) =>
-                `${key}: ${Array.isArray(value) ? value.join(', ') : value}`,
-            )
-            .join('\n')
-        : 'Неизвестная ошибка';
-
-      showToast('registration-error', 'Ошибка регистрации', errorMessage);
+      if (error?.data?.errors) {
+        Object.entries(error.data.errors).forEach(([key, message]) => {
+          if (message === 'is invalid') {
+            const keyRU =
+              // eslint-disable-next-line no-nested-ternary
+              key === 'email'
+                ? 'Адрес'
+                : key === 'password'
+                  ? 'Пароль'
+                  : 'Никнейм';
+            const errorMessage = `${keyRU} некорректен`;
+            setError(key, { type: 'server', message: errorMessage });
+          } else {
+            message = 'уже занят';
+            const keyRU = key === 'email' ? 'адрес' : 'никнейм';
+            const errorMessage = `Такой ${keyRU} ${message}`;
+            setError(key, { type: 'server', message: errorMessage });
+          }
+        });
+      }
     } finally {
       setIsSubmitting(false);
     }

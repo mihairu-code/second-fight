@@ -16,6 +16,7 @@ export default function SignIn() {
   const {
     control,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm({ mode: 'onChange' });
 
@@ -48,16 +49,31 @@ export default function SignIn() {
 
       navigate('/articles');
     } catch (error) {
-      const errorMessage = error?.data?.errors
-        ? Object.entries(error.data.errors)
-            .map(
-              ([key, value]) =>
-                `${key}: ${Array.isArray(value) ? value.join(', ') : value}`,
-            )
-            .join('\n')
-        : 'Неизвестная ошибка';
-
-      showToast('login-error', 'Ошибка входа', errorMessage);
+      if (error?.data?.errors) {
+        if (error.data.errors['email or password']) {
+          setError('email', {
+            type: 'server',
+            message: 'Логин или пароль некорректен',
+          });
+          setError('password', {
+            type: 'server',
+            message: 'Логин или пароль некорректен',
+          });
+        } else {
+          Object.entries(error.data.errors).forEach(([key, message]) => {
+            setError(key, { type: 'server', message });
+          });
+        }
+      } else {
+        setError('email', {
+          type: 'server',
+          message: 'Ошибка сервера, попробуйте позже',
+        });
+        setError('password', {
+          type: 'server',
+          message: 'Ошибка сервера, попробуйте позже',
+        });
+      }
     }
   };
 
